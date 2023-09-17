@@ -1,7 +1,7 @@
-from config import DevelopmentConfig
+from .config import DevelopmentConfig
 from flask import Flask, session
-from db import db, ma 
-from touchcenter.views import home
+from .db import db, ma 
+from .touchcenter.views import home
 
 
 #ACTIVE_ENDPOINTS = [('/',home), ('/dashboard', dashboard), ('/releases', releases), ('/artists', artists), ('/purchase', purchase), ("/products", products) ]
