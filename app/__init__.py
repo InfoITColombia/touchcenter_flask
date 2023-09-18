@@ -1,6 +1,7 @@
 from .config import DevelopmentConfig
 from flask import Flask, session
-from .db import db, ma 
+
+from .database import db, ma
 from .touchcenter.views import home
 
 
@@ -21,7 +22,7 @@ def create_app(config=DevelopmentConfig):
     
 
     with app.app_context():
-        db.create_all()
+        database.create_all()
 
     # register each active blueprint
     for url, blueprint in ACTIVE_ENDPOINTS:
