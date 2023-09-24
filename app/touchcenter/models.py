@@ -63,7 +63,8 @@ class UsuarioSchema(ma.SQLAlchemyAutoSchema):
 
 
 def get_user_by_email(email):
-    usuario_qs = Usuario.query.filter_by(email_usuario = email).first()
-    usuario_schema = UsuarioSchema()
-    u = usuario_schema.dump(usuario_qs)
-    return u
+    #usuario_qs = Usuario.query.filter_by(email_usuario = email).first()
+    #usuario_schema = UsuarioSchema()
+    #u = usuario_schema.dump(usuario_qs)
+    #return u
+    None

@@ -11,7 +11,7 @@ ACTIVE_ENDPOINTS = [('/',home) ]
 
 def create_app(config=DevelopmentConfig):
     app = Flask(__name__)
-    
+    app.debug = True 
     app.config.from_object(config)
     #app.config.from_envvar('CONFIG_SETTINGS')
 
