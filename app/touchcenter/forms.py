@@ -4,5 +4,5 @@ from wtforms import StringField, SelectField, PasswordField, IntegerField, FileF
 
 
 class LoginUsuarioForm(FlaskForm):
-    email_usuario =  StringField('Email', validators=[DataRequired()])
+    usuario =  StringField('Usuario', validators=[DataRequired()])
     pwd_usuario =  PasswordField('Contraseña', validators=[DataRequired()])

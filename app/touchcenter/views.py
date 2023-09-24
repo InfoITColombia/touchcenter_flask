@@ -1,6 +1,6 @@
 from flask import Blueprint, Response, flash, session, request, g, render_template, redirect, url_for, jsonify, make_response
 from .forms import LoginUsuarioForm
-from .models import get_user_by_email
+from .models import get_user_by_usuario
 
 home = Blueprint('home', __name__)
 
@@ -20,10 +20,10 @@ def login():
         return resp
 
     if request.method == 'POST':
-        email = form_login.email_usuario.data
+        usuario = form_login.usuario.data
         pwd = form_login.pwd_usuario.data
 
-        user = get_user_by_email(email)
+        user = get_user_by_usuario(usuario)
         print(user)
         if not user:
             print("no existe el usuario")
