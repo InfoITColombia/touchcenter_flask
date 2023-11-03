@@ -27,12 +27,30 @@ class ProductionConfig(Config):
     SQLALCHEMY_POOL_RECYCLE = 299
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = True
+    FLASK_DEBUG = True
 
 
-class DevelopmentConfig(Config):
+class DevelopmentConfigSQLITE(Config):
     FLASK_DEBUG = True
     FLASK_ENV='development'
     DEBUG=True
     SECRET_KEY = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
     SQLALCHEMY_DATABASE_URI = "sqlite:///touchcenter.sqlite3"
+
+
+class DevelopmentConfigMYSQL(Config):
+    FLASK_DEBUG = True
+    FLASK_ENV='development'
+    DEBUG=True
+    SECRET_KEY = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
+    SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
+    username="miguellperezz",
+    password="adminTouchcenter",
+    hostname="miguellperezz.mysql.pythonanywhere-services.com",
+    databasename="miguellperezz$touchcenter",
+)
+    SQLALCHEMY_POOL_RECYCLE = 299
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEBUG = True
+    FLASK_DEBUG = True
 
