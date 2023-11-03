@@ -28,10 +28,31 @@ def login():
         if not user:
             print("no existe el usuario")
             flash("No existe el usuario")
-            return redirect(url_for('home.index'))
+            return redirect(url_for('home.login'))
         elif user['pwd_usuario'] == pwd:
             flash("Bienvenido")
             session["user"] = user
-            return redirect(url_for('home.index', user=g.user, purchase_cart = g.purchase))
+            return redirect(url_for('home.index'))
+        else:
+            flash("Contraseña incorrecta")
+            return redirect(url_for('home.login'))
+        
+
+@home.route("/register", methods=["GET", 'POST'])
+def register():
+    form_login = LoginUsuarioForm()
+
+    if request.method == 'GET':
+        resp = make_response(render_template('register.html', form=form_login))
+        resp.set_cookie('same-site-cookie', 'foo', samesite='Lax')
+        resp.set_cookie('cross-site-cookie', 'bar', samesite='Lax', secure=True)
+        return resp
+
+    if request.method == 'POST':
+        usuario = form_login.usuario.data
+        pwd = form_login.pwd_usuario.data
+
+        user = get_user_by_usuario(usuario)
+        print(user)
 
    
