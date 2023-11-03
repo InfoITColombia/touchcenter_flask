@@ -9,7 +9,7 @@ from .touchcenter.views import home
 ACTIVE_ENDPOINTS = [('/',home) ]
 
 
-def create_app(config=ProductionConfig):
+def create_app(config=DevelopmentConfigSQLITE):
     app = Flask(__name__)
     app.debug = True 
     app.config.from_object(config)

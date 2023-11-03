@@ -53,6 +53,7 @@ class Cliente(db.Model):
 class Usuario (db.Model):
     n_usuario = db.Column(db.String(20), primary_key=True)
     pwd_usuario = db.Column(db.String(100), nullable = False)
+    tipo_usuario = db.Column(db.String(20), nullable = False)
 
 #ESQUEMAS schema
 class UsuarioSchema(ma.SQLAlchemyAutoSchema):

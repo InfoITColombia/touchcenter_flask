@@ -16,8 +16,7 @@ class Config(object):
     
 
 class ProductionConfig(Config):
-    SECRET_KEY = os.getenv("SECRET_KEY", 123456)
-    SQLALCHEMY_DATABASE_URI = DB_URI
+    
     SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
     username="miguellperezz",
     password="adminTouchcenter",
