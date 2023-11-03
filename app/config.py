@@ -44,10 +44,10 @@ class DevelopmentConfigMYSQL(Config):
     DEBUG=True
     SECRET_KEY = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
     SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
-    username="miguellperezz",
-    password="adminTouchcenter",
-    hostname="miguellperezz.mysql.pythonanywhere-services.com",
-    databasename="miguellperezz$touchcenter",
+    username="touchapp",
+    password="touchapp",
+    hostname="127.0.0.1:3306",
+    databasename="touchapp3",
 )
     SQLALCHEMY_POOL_RECYCLE = 299
     SQLALCHEMY_TRACK_MODIFICATIONS = False

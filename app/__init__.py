@@ -1,4 +1,4 @@
-from .config import DevelopmentConfig, ProductionConfig
+from .config import  ProductionConfig, DevelopmentConfigMYSQL, DevelopmentConfigSQLITE
 from flask import Flask, session
 
 from .database import db, ma
