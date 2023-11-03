@@ -1,4 +1,4 @@
-from .config import DevelopmentConfig
+from .config import DevelopmentConfig, ProductionConfig
 from flask import Flask, session
 
 from .database import db, ma
@@ -9,7 +9,7 @@ from .touchcenter.views import home
 ACTIVE_ENDPOINTS = [('/',home) ]
 
 
-def create_app(config=DevelopmentConfig):
+def create_app(config=ProductionConfig):
     app = Flask(__name__)
     app.debug = True 
     app.config.from_object(config)
