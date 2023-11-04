@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{url_for('home.index')}}">touchcenter</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('producto.productos')}}">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('venta.ventas')}}">Ventas</a>
+                </li>
+  
+            </ul>
+  
+        </div>
+  
+        {% if g.user %}
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          
+          <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      {{g.user[0]["n_usuario"]}}
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                      <li><a class="dropdown-item" href="{{url_for('admin.home')}}">Opciones Admin</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="{{url_for('usuario.logout')}}">Cerar sesión</a></li>
+                  </ul>
+              </li>
+          </ul>
+  
+        {% endif %}
+  
+  
+  
+    </div>
+  </nav>

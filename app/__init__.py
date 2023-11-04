@@ -2,11 +2,11 @@ from .config import  ProductionConfig, DevelopmentConfigMYSQL, DevelopmentConfig
 from flask import Flask, session
 
 from .database import db, ma
-from .touchcenter.views import home
+from .touchcenter.views import home, producto, venta
 
 
 #ACTIVE_ENDPOINTS = [('/',home), ('/dashboard', dashboard), ('/releases', releases), ('/artists', artists), ('/purchase', purchase), ("/products", products) ]
-ACTIVE_ENDPOINTS = [('/',home) ]
+ACTIVE_ENDPOINTS = [('/',home), ('/producto',producto), ('/venta', venta)  ]
 
 
 def create_app(config=DevelopmentConfigSQLITE):

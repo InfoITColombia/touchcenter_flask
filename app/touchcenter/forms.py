@@ -6,3 +6,8 @@ from wtforms import StringField, SelectField, PasswordField, IntegerField, FileF
 class LoginUsuarioForm(FlaskForm):
     usuario =  StringField('Usuario', validators=[DataRequired()])
     pwd_usuario =  PasswordField('Contraseña', validators=[DataRequired()])
+
+class RegistroUsuarioForm(FlaskForm):
+    usuario =  StringField('Usuario', validators=[DataRequired()])
+    pwd_usuario =  PasswordField('Contraseña', validators=[DataRequired()])
+    
