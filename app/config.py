@@ -46,7 +46,7 @@ class DevelopmentConfigMYSQL(Config):
     username="touchapp",
     password="touchapp",
     hostname="127.0.0.1:3306",
-    databasename="touchapp3",
+    databasename="touchapp",
 )
     SQLALCHEMY_POOL_RECYCLE = 299
     SQLALCHEMY_TRACK_MODIFICATIONS = False
