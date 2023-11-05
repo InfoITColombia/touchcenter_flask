@@ -28,14 +28,14 @@ def login():
         print(user)
         if not user:
             print("no existe el usuario")
-            flash("No existe el usuario", 'info')
+            flash( 'info',"No existe el usuario")
             return redirect(url_for('home.login'))
         elif user['pwd_usuario'] == pwd:
-            flash("Bienvenido", 'info')
+            flash('info', "Bienvenido")
             session["user"] = user
             return redirect(url_for('home.index'))
         else:
-            flash("Contraseña incorrecta", 'warning')
+            flash('warning', "Contraseña incorrecta")
             return redirect(url_for('home.login'))
         
 
@@ -55,15 +55,15 @@ def register():
 
         user = get_user_by_usuario(usuario)
         if user:
-            flash("El usuario ya existe", 'info')
+            flash('info', "El usuario ya existe")
             return redirect(url_for('home.register'))
         else:
             user = register_user(usuario,pwd, "admin" )
             if user:
-                flash("Se registro el usuario "+ user, 'success')
+                flash( 'success', "Se registro el usuario "+ user)
                 return redirect(url_for('home.login'))
             else:
-                flash( "No se registró el usuario ", 'error')
+                flash( 'error', "No se registró el usuario ")
                 return redirect(url_for('home.register'))
    
 
