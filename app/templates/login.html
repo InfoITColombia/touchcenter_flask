@@ -4,14 +4,16 @@ Login
 {%endblock%}
 {%block contenido%}
 
-<h1>Login</h1>
+
+<h1 class="login-title">Login</h1>
 <form method="POST" action="{{url_for('home.login')}}">
     
     
     {{ form.usuario.label }} {{ form.usuario(size=20) }}
     {{ form.pwd_usuario.label }} {{ form.pwd_usuario(size=20) }}
-    <input type="submit" value="Login!">
+    <input class="btn btn-primary" type="submit" value="Login!">
 </form> 
+
 
 
 {%endblock%}

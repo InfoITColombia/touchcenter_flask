@@ -9,7 +9,7 @@ from .touchcenter.views import home, producto, venta
 ACTIVE_ENDPOINTS = [('/',home), ('/producto',producto), ('/venta', venta)  ]
 
 
-def create_app(config=ProductionConfig):
+def create_app(config=DevelopmentConfigMYSQL):
     app = Flask(__name__)
     app.debug = True 
     app.config.from_object(config)
