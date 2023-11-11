@@ -1,14 +1,65 @@
 from flask import Blueprint, Response, flash, session, request, g, render_template, redirect, url_for, jsonify, make_response
 from .forms import LoginUsuarioForm, RegistroUsuarioForm
 from .models import get_user_by_usuario, register_user
+from flask_jwt_extended import create_access_token, verify_jwt_in_request
+import datetime
+from datetime import timedelta
+from functools import wraps
+import jwt
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 home = Blueprint('home', __name__)
 producto = Blueprint('producto', __name__ , url_prefix = '/producto')
 venta = Blueprint('venta',       __name__ , url_prefix = '/venta')
 
+
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        try:
+            token = session.get("user")[0]["access_token"]
+            print("TOKEN " +  token)
+            if not token:
+                flash("error", "Error de sesión! "+str(e))
+
+                return redirect(url_for('home.logout'))
+
+
+
+            data = jwt.decode(token, "holaMundo", algorithms=["HS256"])
+            # Realiza cualquier otra validación que necesites aquí
+        except jwt.ExpiredSignatureError:
+            flash("error", "Su sesión expiró!")
+            session.pop("user", None)  # Elimina la sesión del usuario
+            return redirect(url_for('home.logout'))
+        except Exception as e:
+            print("ERROR DE SESION! "+ str(e))
+            flash("error", ("Su sesión expiró " ))
+            return redirect(url_for('home.logout'))
+
+        return f(*args, **kwargs)
+
+    return decorated
+
+@producto.before_request
+@token_required
+def validate_producto_request():
+    # Esta función se ejecutará antes de cada solicitud a la ruta /producto
+    pass  # Puedes realizar acciones adicionales si es necesario
+
+@venta.before_request
+@token_required
+def validate_venta_request():
+    # Esta función se ejecutará antes de cada solicitud a la ruta /venta
+    pass  # Puedes realizar acciones adicionales si es necesario
+
 @home.route("/")
+@token_required
 def index():
     return render_template("home.html") 
+
 
 @home.route("/login", methods=["GET", 'POST'])
 def login():
@@ -32,11 +83,19 @@ def login():
             return redirect(url_for('home.login'))
         elif user['pwd_usuario'] == pwd:
             flash('info', "Bienvenido")
-            session["user"] = user
+            access_token = create_access_token(identity=user["n_usuario"], expires_delta=datetime.timedelta(seconds=10))
+            session["user"] = [{"n_usuario":user["n_usuario"],  "access_token":access_token} ]
             return redirect(url_for('home.index'))
         else:
             flash('warning', "Contraseña incorrecta")
             return redirect(url_for('home.login'))
+
+@home.route("/logout",  methods=["GET", 'POST'])
+def logout():
+    g.user=None
+    session.pop("user", None)
+    print("Se cerró sesión")
+    return redirect(url_for('home.login',user=g.user))
         
 
 @home.route("/register", methods=["GET", 'POST'])
@@ -68,9 +127,11 @@ def register():
    
 
 @producto.route("/", methods=["GET", "POST"])
+
 def productos():
     return "Productos"
 
 @venta.route("/", methods=["GET", "POST"])
+
 def ventas():
     return "ventas"

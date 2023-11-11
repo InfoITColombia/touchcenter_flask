@@ -4,6 +4,7 @@ from flask import Flask, session
 from .database import db, ma
 from .touchcenter.views import home, producto, venta
 
+from flask_jwt_extended import JWTManager
 
 #ACTIVE_ENDPOINTS = [('/',home), ('/dashboard', dashboard), ('/releases', releases), ('/artists', artists), ('/purchase', purchase), ("/products", products) ]
 ACTIVE_ENDPOINTS = [('/',home), ('/producto',producto), ('/venta', venta)  ]
@@ -17,6 +18,8 @@ def create_app(config=DevelopmentConfigMYSQL):
 
     db.init_app(app)
     ma.init_app(app)
+    jwt = JWTManager(app)
+    app.config['SECRET_KEY'] = 'holaMundo'
     
     
     
