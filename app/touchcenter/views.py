@@ -1,5 +1,5 @@
 from flask import Blueprint, Response, flash, session, request, g, render_template, redirect, url_for, jsonify, make_response
-from .forms import LoginUsuarioForm, RegistroUsuarioForm
+from .forms import LoginUsuarioForm, RegistroUsuarioForm, newClienteForm, newArticuloForm
 from .models import get_user_by_usuario, register_user
 from flask_jwt_extended import create_access_token, verify_jwt_in_request
 import datetime
@@ -12,6 +12,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 home = Blueprint('home', __name__)
 producto = Blueprint('producto', __name__ , url_prefix = '/producto')
 venta = Blueprint('venta',       __name__ , url_prefix = '/venta')
+admin = Blueprint('admin',       __name__ , url_prefix = '/admin')
 
 
 
@@ -19,8 +20,9 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         try:
-            token = session.get("user")[0]["access_token"]
-            print("TOKEN " +  token)
+            #token = session.get("user")[0]["access_token"]
+            token = session.get("user")["access_token"]
+            #print("TOKEN " +  token)
             if not token:
                 flash("error", "Error de sesión! "+str(e))
 
@@ -30,7 +32,8 @@ def token_required(f):
 
             data = jwt.decode(token, "holaMundo", algorithms=["HS256"])
             # Realiza cualquier otra validación que necesites aquí
-        except jwt.ExpiredSignatureError:
+        except jwt.ExpiredSignatureError as e:
+            print("ERROR GENERANDO EL TOKEN ! "+ str(e))
             flash("error", "Su sesión expiró!")
             session.pop("user", None)  # Elimina la sesión del usuario
             return redirect(url_for('home.logout'))
@@ -43,22 +46,19 @@ def token_required(f):
 
     return decorated
 
-@producto.before_request
-@token_required
-def validate_producto_request():
-    # Esta función se ejecutará antes de cada solicitud a la ruta /producto
-    pass  # Puedes realizar acciones adicionales si es necesario
+
 
 @venta.before_request
+@admin.before_request
+@producto.before_request
 @token_required
-def validate_venta_request():
-    # Esta función se ejecutará antes de cada solicitud a la ruta /venta
-    pass  # Puedes realizar acciones adicionales si es necesario
+def validate_before_request():
+    pass
 
 @home.route("/")
 @token_required
 def index():
-    return render_template("home.html") 
+    return redirect(url_for('venta.ventas'))
 
 
 @home.route("/login", methods=["GET", 'POST'])
@@ -76,7 +76,7 @@ def login():
         pwd = form_login.pwd_usuario.data
 
         user = get_user_by_usuario(usuario)
-        print(user)
+
         if not user:
             print("no existe el usuario")
             flash( 'info',"No existe el usuario")
@@ -84,7 +84,8 @@ def login():
         elif user['pwd_usuario'] == pwd:
             flash('info', "Bienvenido")
             access_token = create_access_token(identity=user["n_usuario"], expires_delta=datetime.timedelta(seconds=10))
-            session["user"] = [{"n_usuario":user["n_usuario"],  "access_token":access_token} ]
+            session["user"] = {"n_usuario":user["n_usuario"],  "access_token":access_token} 
+            print(session["user"])
             return redirect(url_for('home.index'))
         else:
             flash('warning', "Contraseña incorrecta")
@@ -127,11 +128,25 @@ def register():
    
 
 @producto.route("/", methods=["GET", "POST"])
-
 def productos():
     return "Productos"
 
 @venta.route("/", methods=["GET", "POST"])
-
 def ventas():
-    return "ventas"
+    if request.method == "GET":
+        return render_template('ventas.html')
+
+@venta.route("/nuevo", methods=["GET", "POST"])
+def nuevaventa():
+
+    form_new_cliente = newClienteForm()
+    form_new_articulo = newArticuloForm()
+    if request.method == "GET":
+        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_producto = form_new_articulo)
+
+@admin.route("/", methods=["GET", "POST"])
+def dash():
+    form_new_cliente = newClienteForm()
+    form_new_articulo = newArticuloForm()
+    if request.method == "GET":
+        return render_template('admin.html', form_new_cliente = form_new_cliente, form_new_producto = form_new_articulo)
