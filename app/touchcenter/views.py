@@ -1,18 +1,20 @@
 from flask import Blueprint, Response, flash, session, request, g, render_template, redirect, url_for, jsonify, make_response
-from .forms import LoginUsuarioForm, RegistroUsuarioForm, newClienteForm, newArticuloForm
-from .models import get_user_by_usuario, register_user
+from .forms import LoginUsuarioForm, RegistroUsuarioForm, newClienteForm, newArticuloForm, newProveedorForm
+from .models import *
 from flask_jwt_extended import create_access_token, verify_jwt_in_request
-import datetime
-from datetime import timedelta
+from ..config import Config as conf
+
+
 from functools import wraps
 import jwt
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 home = Blueprint('home', __name__)
-producto = Blueprint('producto', __name__ , url_prefix = '/producto')
+articulo = Blueprint('articulo', __name__ , url_prefix = '/articulo')
 venta = Blueprint('venta',       __name__ , url_prefix = '/venta')
 admin = Blueprint('admin',       __name__ , url_prefix = '/admin')
+proveedor = Blueprint('proveedor', __name__ , url_prefix = '/proveedor')
 
 
 
@@ -39,7 +41,7 @@ def token_required(f):
             return redirect(url_for('home.logout'))
         except Exception as e:
             print("ERROR DE SESION! "+ str(e))
-            flash("error", ("Su sesión expiró " ))
+            #flash("error", ("Su sesión expiró " ))
             return redirect(url_for('home.logout'))
 
         return f(*args, **kwargs)
@@ -50,7 +52,7 @@ def token_required(f):
 
 @venta.before_request
 @admin.before_request
-@producto.before_request
+@articulo.before_request
 @token_required
 def validate_before_request():
     pass
@@ -83,7 +85,7 @@ def login():
             return redirect(url_for('home.login'))
         elif user['pwd_usuario'] == pwd:
             flash('info', "Bienvenido")
-            access_token = create_access_token(identity=user["n_usuario"], expires_delta=datetime.timedelta(seconds=10))
+            access_token = create_access_token(identity=user["n_usuario"], expires_delta= conf.TOKEN_EXPIRES)
             session["user"] = {"n_usuario":user["n_usuario"],  "access_token":access_token} 
             print(session["user"])
             return redirect(url_for('home.index'))
@@ -127,9 +129,9 @@ def register():
                 return redirect(url_for('home.register'))
    
 
-@producto.route("/", methods=["GET", "POST"])
-def productos():
-    return "Productos"
+@articulo.route("/", methods=["GET", "POST"])
+def articulos():
+    return "articulos"
 
 @venta.route("/", methods=["GET", "POST"])
 def ventas():
@@ -141,12 +143,61 @@ def nuevaventa():
 
     form_new_cliente = newClienteForm()
     form_new_articulo = newArticuloForm()
+    form_new_proveedor = newProveedorForm()
     if request.method == "GET":
-        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_producto = form_new_articulo)
+        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor)
 
 @admin.route("/", methods=["GET", "POST"])
 def dash():
     form_new_cliente = newClienteForm()
     form_new_articulo = newArticuloForm()
     if request.method == "GET":
-        return render_template('admin.html', form_new_cliente = form_new_cliente, form_new_producto = form_new_articulo)
+        return render_template('admin.html', form_new_cliente = form_new_cliente, form_new_articulo= form_new_articulo)
+
+
+@proveedor.route("/nuevo", methods=["POST"])
+def nuevoProveedor():
+    form_new_proveedor = newProveedorForm()
+    if form_new_proveedor.validate_on_submit():
+        nombre = form_new_proveedor.n_proveedor.data
+        dir = form_new_proveedor.dir_proveedor.data
+        tel = form_new_proveedor.tel_proveedor.data
+        prov = register_proveedor(nombre, dir, tel)
+        if prov:
+                flash( "success", "Proveedor registrado exitosamente")
+                return redirect(request.referrer)
+        else:
+                flash( "error", "Error al registrar proveedor")
+                return redirect(request.referrer)
+
+    # Manejo adicional para solicitudes GET o si la validación del formulario falla
+    return render_template('tu_template.html', form_new_proveedor=form_new_proveedor)
+
+@proveedor.route("/JSONProveedores", methods=["GET"])
+def JSONProveedores():
+    proveedores = get_proveedores() 
+    # Puedes personalizar el formato JSON según tus necesidades
+    proveedores_json = [{"label": proveedor.n_proveedor, "value": proveedor.id} for proveedor in proveedores]
+    print (proveedores_json)
+    return jsonify(proveedores_json)
+    
+
+@articulo.route("/nuevo", methods=["POST"])
+def nuevoArticulo():
+    form_new_articulo = newArticuloForm()
+    if form_new_articulo.validate_on_submit():
+        n_articulo = form_new_articulo.n_articulo.data
+        desc_articulo = form_new_articulo.desc_articulo.data
+        v_articulo = form_new_articulo.v_articulo.data
+        q_Articulo = form_new_articulo.q_articulo.data
+        k_proveedor = 1
+        articulo = register_articulo(n_articulo, desc_articulo, v_articulo,q_Articulo, k_proveedor)
+        if articulo:
+                flash( "success", "Articulo registrado exitosamente")
+                return redirect(request.referrer)
+        else:
+                flash( "error", "Error al registrar articulo")
+                return redirect(request.referrer)
+
+    # Manejo adicional para solicitudes GET o si la validación del formulario falla
+    #return render_template('tu_template.html', form_new_proveedor=form_new_proveedor)

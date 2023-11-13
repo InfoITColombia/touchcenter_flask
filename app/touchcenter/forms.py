@@ -22,6 +22,10 @@ class newArticuloForm(FlaskForm):
     desc_articulo = StringField('Descricpión', validators=[DataRequired()])
     v_articulo = DecimalField(places=2,  validators=[DataRequired()])
     q_articulo = IntegerField('Cantidad', validators=[DataRequired()])
+    k_proveedor = StringField('Proveedor', id='k_proveedor', validators=[DataRequired()])
 
-class newVentaForm(FlaskForm):
-    pass
+class newProveedorForm(FlaskForm):
+    n_proveedor = StringField('Nombre', validators=[DataRequired()])
+    dir_proveedor = StringField('Dirección', validators=[DataRequired()])
+    tel_proveedor = StringField('Teléfono', validators=[DataRequired()])
+   

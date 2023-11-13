@@ -91,4 +91,29 @@ def register_user(usuario, pwd, tipo):
     except Exception as e:
         print ("No se registró el ususario "+ str(e))
         return None     
+
+def register_proveedor(nombre,dir, tel):
+    proveedor = Proveedor(n_proveedor = nombre, dir_proveedor = dir, tel_proveedor = tel)
+    try:
+        db.session.add(proveedor)
+        db.session.commit()
+        return proveedor
+    except Exception as e:
+        print ("No se registró el proveedor "+ str(e))
+        return None 
+
+def get_proveedores():
+    proveedores = Proveedor.query.all()
+    print(proveedores)
+    return Proveedor.query.all()
+
+def register_articulo(n_articulo, desc_articulo, v_articulo,q_Articulo, k_proveedor):
+    articulo = Articulo(n_articulo = n_articulo, desc_articulo = desc_articulo, v_articulo = v_articulo,q_Articulo = q_Articulo, k_proveedor=k_proveedor)
+    try:
+        db.session.add(articulo)
+        db.session.commit()
+        return articulo
+    except Exception as e:
+        print ("No se registró el proveedor "+ str(e))
+        return None    
     
