@@ -177,7 +177,7 @@ def nuevoProveedor():
 def JSONProveedores():
     proveedores = get_proveedores() 
     # Puedes personalizar el formato JSON según tus necesidades
-    proveedores_json = [{"label": proveedor.n_proveedor, "value": proveedor.id} for proveedor in proveedores]
+    proveedores_json = [{"label": str(proveedor.id) +" - "+ proveedor.n_proveedor, "value": str(proveedor.id) +" - "+ proveedor.n_proveedor} for proveedor in proveedores]
     print (proveedores_json)
     return jsonify(proveedores_json)
     
@@ -190,8 +190,10 @@ def nuevoArticulo():
         desc_articulo = form_new_articulo.desc_articulo.data
         v_articulo = form_new_articulo.v_articulo.data
         q_Articulo = form_new_articulo.q_articulo.data
-        k_proveedor = 1
-        articulo = register_articulo(n_articulo, desc_articulo, v_articulo,q_Articulo, k_proveedor)
+        #k_proveedor = form_new_articulo.k_proveedor.data
+        n_proveedor = form_new_articulo.n_proveedor.data
+        print("el proveedor elegido es "+str(n_proveedor))
+        articulo = register_articulo(n_articulo, desc_articulo, v_articulo,q_Articulo, n_proveedor.split(" - ",1)[0])
         if articulo:
                 flash( "success", "Articulo registrado exitosamente")
                 return redirect(request.referrer)

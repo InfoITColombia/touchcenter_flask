@@ -14,7 +14,7 @@ class Config(object):
     #SQLALCHEMY_ECHO=True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = UPLOAD_FOLDER
-    TOKEN_EXPIRES = datetime.timedelta(seconds=180)
+    TOKEN_EXPIRES = datetime.timedelta(seconds=1000)
 
 
     

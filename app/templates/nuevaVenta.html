@@ -90,10 +90,12 @@ Nueva venta
                     </div>
 
                     <div class="mb-3">
-                      {{ form_new_articulo.k_proveedor.label(class="form-label") }}
-                      {{ form_new_articulo.k_proveedor(class="form-control") }}
-                      
+                        {{ form_new_articulo.n_proveedor.label(class="form-label") }}
+                        {{ form_new_articulo.n_proveedor(class="form-control", id="autocomplete-proveedor") }}
                     </div>
+
+                    <!-- Campo oculto para almacenar el ID del proveedor -->
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -105,23 +107,27 @@ Nueva venta
 </div>
 
 
+
 <script>
   $(function() {
       $.ajax({
           url: '{{ url_for("proveedor.JSONProveedores") }}'
       }).done(function (data){
           console.log(data)
-          $('[name="k_proveedor"]').autocomplete({
+          $('#autocomplete-proveedor').autocomplete({
               source: data,
               minLength: 2,
               select: function(event, ui) {
-                  // Asigna la llave primaria al campo k_proveedor
-                  $('[name="k_proveedor"]').val(ui.item.value);
+                k_proveedor = ui.item.label
+                console.log("K_PROVEEDOR ES "+k_proveedor)
+                  // Asigna el nombre del proveedor al campo n_proveedor
+                  $('#autocomplete-proveedor').val(ui.item.label);
               }
           });
       });
   });
 </script>
+
 
 
 
