@@ -84,7 +84,7 @@ def login():
             flash( 'info',"No existe el usuario")
             return redirect(url_for('home.login'))
         elif user['pwd_usuario'] == pwd:
-            flash('info', "Bienvenido")
+            #flash('info', "Bienvenido")
             access_token = create_access_token(identity=user["n_usuario"], expires_delta= conf.TOKEN_EXPIRES)
             session["user"] = {"n_usuario":user["n_usuario"],  "access_token":access_token} 
             print(session["user"])
