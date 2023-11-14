@@ -7,7 +7,7 @@ from base64 import b64encode
 
 
 class Proveedor(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     n_proveedor = db.Column(db.String(100), nullable = False)
     dir_proveedor = db.Column(db.String(50))
     tel_proveedor = db.Column(db.String(50))
@@ -27,29 +27,13 @@ class Articulo(db.Model):
     #atributos de la relacion
     proveedor = db.relationship("Proveedor")
 
-class Item(db.Model):
+class Servicio(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    k_articulo = db.Column(db.Integer, db.ForeignKey("articulo.id"),primary_key=True)
-    k_venta =db.Column(db.Integer, db.ForeignKey("venta.id"), primary_key=True)
-    q_item = db.Column(db.Integer)
-    vu_item = db.Column(db.Numeric(11,2), nullable = False )
+    n_servicio = db.Column(db.String(100), nullable = False)
+    desc_servicio = db.Column(db.String(300))
+    e_servicio = db.Column(db.String(20), nullable = False)
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
-    #atributos de la relacion
-    articulo = db.relationship("Articulo")
-    venta = db.relationship("Venta")
-
-class Venta(db.Model):
-    id =  db.Column(db.Integer, primary_key=True, autoincrement=True)
-    k_cliente = db.Column(db.Integer, db.ForeignKey("cliente.id") )
-    k_usuario = db.Column(db.String(20), db.ForeignKey("usuario.n_usuario"))
-    f_venta = db.Column(db.DateTime, default= datetime.now())
-    v_total_venta = db.Column(db.Numeric(11,2), nullable = False )
-    created_on = db.Column(db.DateTime(), default=datetime.utcnow)
-    updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
-    #atributos de la relacion
-    cliente = db.relationship("Cliente")
-    usuario = db.relationship("Usuario")
 
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,6 +50,43 @@ class Usuario (db.Model):
     tipo_usuario = db.Column(db.String(20), nullable = False)
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class Venta(db.Model):
+    id =  db.Column(db.Integer, primary_key=True, autoincrement=True)
+    k_cliente = db.Column(db.Integer, db.ForeignKey("cliente.id") )
+    k_usuario = db.Column(db.String(20), db.ForeignKey("usuario.n_usuario"))
+    f_venta = db.Column(db.DateTime, default= datetime.now())
+    v_total_venta = db.Column(db.Numeric(11,2), nullable = False )
+    created_on = db.Column(db.DateTime(), default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
+    #atributos de la relacion
+    cliente = db.relationship("Cliente")
+    usuario = db.relationship("Usuario")
+
+class Servicio_Venta(db.Model):
+    k_venta = db.Column(db.Integer, db.ForeignKey("venta.id") ,primary_key=True)
+    k_servicio = db.Column(db.Integer, db.ForeignKey("servicio.id") ,primary_key=True)
+    #atributos de la relacion
+    venta = db.relationship("Venta")
+    servicio = db.relationship("Servicio")
+
+class Item(db.Model):
+    k_venta = db.Column(db.Integer, db.ForeignKey("venta.id") ,primary_key=True)
+    k_servicio = db.Column(db.Integer, db.ForeignKey("servicio.id") ,primary_key=True)
+    k_articulo = db.Column(db.Integer, db.ForeignKey("articulo.id"),primary_key=True)
+    q_item = db.Column(db.Integer)
+    vu_item = db.Column(db.Numeric(11,2), nullable = False )
+    created_on = db.Column(db.DateTime(), default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
+    #atributos de la relacion
+    articulo = db.relationship("Articulo")
+    venta = db.relationship("Venta")
+    servicio = db.relationship("Servicio")
+
+
+
+
+
 
 #ESQUEMAS schema
 class UsuarioSchema(ma.SQLAlchemyAutoSchema):
