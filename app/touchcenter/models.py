@@ -66,6 +66,7 @@ class Venta(db.Model):
 class Servicio_Venta(db.Model):
     k_venta = db.Column(db.Integer, db.ForeignKey("venta.id") ,primary_key=True)
     k_servicio = db.Column(db.Integer, db.ForeignKey("servicio.id") ,primary_key=True)
+    v_agregado = db.Column(db.Numeric(11,2), nullable = False )
     #atributos de la relacion
     venta = db.relationship("Venta")
     servicio = db.relationship("Servicio")

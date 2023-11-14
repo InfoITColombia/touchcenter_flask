@@ -1,5 +1,5 @@
 from flask import Blueprint, Response, flash, session, request, g, render_template, redirect, url_for, jsonify, make_response
-from .forms import LoginUsuarioForm, RegistroUsuarioForm, newClienteForm, newArticuloForm, newProveedorForm
+from .forms import LoginUsuarioForm, RegistroUsuarioForm, newClienteForm, newArticuloForm, newProveedorForm, newClienteForm, newServicioForm
 from .models import *
 from flask_jwt_extended import create_access_token, verify_jwt_in_request
 from ..config import Config as conf
@@ -15,7 +15,8 @@ articulo = Blueprint('articulo', __name__ , url_prefix = '/articulo')
 venta = Blueprint('venta',       __name__ , url_prefix = '/venta')
 admin = Blueprint('admin',       __name__ , url_prefix = '/admin')
 proveedor = Blueprint('proveedor', __name__ , url_prefix = '/proveedor')
-
+cliente = Blueprint('cliente', __name__ , url_prefix = '/cliente')
+servicio = Blueprint('servicio', __name__ , url_prefix = '/servicio')
 
 
 def token_required(f):
@@ -201,5 +202,14 @@ def nuevoArticulo():
                 flash( "error", "Error al registrar articulo")
                 return redirect(request.referrer)
 
-    # Manejo adicional para solicitudes GET o si la validación del formulario falla
-    #return render_template('tu_template.html', form_new_proveedor=form_new_proveedor)
+@servicio.route("/nuevo", methods=["POST"])
+def nuevoServicio():
+    form_new_servicio=newServicioForm()
+    if form_new_servicio.validate_on_submit():
+        None
+
+@cliente.route("/nuevo", methods=["POST"])
+def nuevoCliente():
+    form_new_cliente = newClienteForm()
+    if form_new_cliente.validate_on_submit():
+        None
