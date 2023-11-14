@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired, NumberRange
-from wtforms import StringField, SelectField, PasswordField, IntegerField, FileField, DateField, EmailField, DecimalField
+from wtforms import StringField, SelectField, PasswordField, IntegerField, FileField, DateField, EmailField, DecimalField, HiddenField
 
 
 class LoginUsuarioForm(FlaskForm):
@@ -22,6 +22,12 @@ class newArticuloForm(FlaskForm):
     desc_articulo = StringField('Descricpión', validators=[DataRequired()])
     v_articulo = DecimalField(places=2,  validators=[DataRequired()])
     q_articulo = IntegerField('Cantidad', validators=[DataRequired()])
+    n_proveedor = StringField('Proveedor', id='n_proveedor', validators=[DataRequired()])
+    #k_proveedor = HiddenField('IdProveedor')
 
-class newVentaForm(FlaskForm):
-    pass
+class newProveedorForm(FlaskForm):
+    n_proveedor = StringField('Nombre', validators=[DataRequired()])
+    dir_proveedor = StringField('Dirección', validators=[DataRequired()])
+    tel_proveedor = StringField('Teléfono', validators=[DataRequired()])
+
+   

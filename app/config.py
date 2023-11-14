@@ -1,4 +1,6 @@
 import os
+import datetime
+from datetime import timedelta
 
 UPLOAD_FOLDER = os.path.abspath("./uploads/")
 DB_URI = "TBD"
@@ -12,6 +14,8 @@ class Config(object):
     #SQLALCHEMY_ECHO=True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = UPLOAD_FOLDER
+    TOKEN_EXPIRES = datetime.timedelta(seconds=1000)
+
 
     
 
