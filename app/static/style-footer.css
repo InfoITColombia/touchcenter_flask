@@ -10,7 +10,7 @@
 }
 
 .logo-footer{
-    width: 300px;
+    width: 450px;
     padding-top: 25%;
 }
 
@@ -29,5 +29,12 @@
 
 .foot h4{
     color: white;
-    padding-top: 25%;
+    padding-top: 50%;
+}
+
+.foot p{
+    color: white;
+    padding-top: 20%;
+    font-size: 40px;
+    
 }
