@@ -38,4 +38,4 @@ def create_app(config=DevelopmentConfigMYSQL):
 if __name__ == "__main__":
     app_flask = create_app()
     print("DEBUG" + str(app_flask.debug))
-    app_flask.run()
+    app_flask.run(debug=True)
