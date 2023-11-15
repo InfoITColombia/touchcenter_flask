@@ -138,4 +138,23 @@ def register_articulo(n_articulo, desc_articulo, v_articulo,q_Articulo, k_provee
     except Exception as e:
         print ("No se registró el proveedor "+ str(e))
         return None    
+
+def register_servicio(n_servicio, desc_servicio):
+    servicio = Servicio(n_servicio = n_servicio, desc_servicio = desc_servicio, e_servicio = 'ACTIVO')
+    try:
+        db.session.add(servicio)
+        db.session.commit()
+        return servicio
+    except Exception as e:
+        print ("No se registró el servicio "+ str(e))
+        return None     
     
+def register_cliente(id_cliente, n_cliente, tel_cliente, email_cliente):
+    cliente  = Cliente(id_cliente=id_cliente, n_cliente=n_cliente,tel_cliente=tel_cliente,email_cliente=email_cliente)
+    try:
+        db.session.add(cliente)
+        db.session.commit()
+        return cliente
+    except Exception as e:
+        print("No se pudo registar el cliente "+str(e))
+        return None

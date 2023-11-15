@@ -2,12 +2,12 @@ from .config import  ProductionConfig, DevelopmentConfigMYSQL, DevelopmentConfig
 from flask import Flask, session
 
 from .database import db, ma
-from .touchcenter.views import home, venta, admin, proveedor, articulo
+from .touchcenter.views import home, venta, admin, proveedor, articulo,servicio
 
 from flask_jwt_extended import JWTManager
 
 #ACTIVE_ENDPOINTS = [('/',home), ('/dashboard', dashboard), ('/releases', releases), ('/artists', artists), ('/purchase', purchase), ("/products", products) ]
-ACTIVE_ENDPOINTS = [('/',home), ('/articulo',articulo), ('/venta', venta), ('/admin', admin), ('/proveedor', proveedor)  ]
+ACTIVE_ENDPOINTS = [('/',home), ('/articulo',articulo), ('/venta', venta), ('/admin', admin), ('/proveedor', proveedor), ("/servicio", servicio)  ]
 
 
 def create_app(config=DevelopmentConfigMYSQL):

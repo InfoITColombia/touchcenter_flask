@@ -1,5 +1,5 @@
 from flask import Blueprint, Response, flash, session, request, g, render_template, redirect, url_for, jsonify, make_response
-from .forms import LoginUsuarioForm, RegistroUsuarioForm, newClienteForm, newArticuloForm, newProveedorForm, newClienteForm, newServicioForm
+from .forms import *
 from .models import *
 from flask_jwt_extended import create_access_token, verify_jwt_in_request
 from ..config import Config as conf
@@ -145,15 +145,22 @@ def nuevaventa():
     form_new_cliente = newClienteForm()
     form_new_articulo = newArticuloForm()
     form_new_proveedor = newProveedorForm()
+    form_venta  =newVentaForm()
     if request.method == "GET":
-        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor)
+        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_venta = form_venta)
+    if request.method == 'POST':
+        k_cliente = form_venta.k_cliente.data
+
+
 
 @admin.route("/", methods=["GET", "POST"])
 def dash():
     form_new_cliente = newClienteForm()
     form_new_articulo = newArticuloForm()
+    form_new_proveedor = newProveedorForm()
+    form_new_servicio = newServicioForm()
     if request.method == "GET":
-        return render_template('admin.html', form_new_cliente = form_new_cliente, form_new_articulo= form_new_articulo)
+        return render_template('admin.html', form_new_cliente = form_new_cliente, form_new_articulo= form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_servicio = form_new_servicio)
 
 
 @proveedor.route("/nuevo", methods=["POST"])
@@ -206,10 +213,28 @@ def nuevoArticulo():
 def nuevoServicio():
     form_new_servicio=newServicioForm()
     if form_new_servicio.validate_on_submit():
-        None
+        n_servicio = form_new_servicio.n_servicio.data
+        desc_servicio = form_new_servicio.desc_servicio.data
+        servicio = register_servicio(n_servicio,desc_servicio)
+        if servicio:
+            flash("success", "Servicio registrado exitosamente")
+            return redirect(request.referrer)
+        else:
+            flash( "error", "Error al registrar servicio")
+            return redirect(request.referrer)
 
 @cliente.route("/nuevo", methods=["POST"])
 def nuevoCliente():
     form_new_cliente = newClienteForm()
     if form_new_cliente.validate_on_submit():
-        None
+       id_cliente = form_new_cliente.id_cliente.data
+       n_cliente  =form_new_cliente.n_cliente.data
+       tel_cliente = form_new_cliente.tel_cliente.data
+       email_cliente = form_new_cliente.email_cliente.data
+       cliente = register_cliente(id_cliente,n_cliente,tel_cliente,email_cliente)
+       if cliente:
+            flash('success', 'Cliente '+str(cliente.id)+" registrado exitosamente")
+            return redirect(request.referrer)
+       else:
+            flash("error", "Error al registrar cliente!")
+            return redirect(request.referrer)
