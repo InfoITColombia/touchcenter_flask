@@ -1,8 +1,33 @@
 .foot{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     background-color: black;
     height: 400px;
 }
 
+.image-logo{
+    text-align: center;
+}
+
 .logo-footer{
     width: 300px;
+    padding-top: 25%;
+}
+
+.contact{
+    text-align: center;
+}
+
+.social-net{
+    text-align: center;
+}
+
+.foot h3{
+    color: white;
+    padding-top: 25%;
+}
+
+.foot h4{
+    color: white;
+    padding-top: 25%;
 }
