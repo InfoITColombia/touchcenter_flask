@@ -12,7 +12,7 @@ Nueva venta
 <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ProveedorModal">Nuevo proveedor</button>
     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ArticuloModal">Nuevo producto</button>
-    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ArticuloModal">Nuevo cliente</button>
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ClienteModal">Nuevo cliente</button>
 
   </div>
 
@@ -109,6 +109,50 @@ Nueva venta
     </div>
 </div>
 
+<div class="modal fade" id="ClienteModal" tabindex="-1" aria-labelledby="ClienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ url_for('cliente.nuevoCliente') }}" class="ajax-form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Cliente</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_new_cliente.hidden_tag() }}
+                    {{ form_new_cliente.csrf_token }}
+        
+                    <div class="mb-3">
+                        {{ form_new_cliente.id_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.id_cliente(class="form-control") }}
+                    </div>
+        
+                    <div class="mb-3">
+                        {{ form_new_cliente.n_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.n_cliente(class="form-control") }}
+                    </div>
+        
+                    <div class="mb-3">
+                        {{ form_new_cliente.tel_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.tel_cliente(class="form-control") }}
+                    </div>
+        
+                    <div class="mb-3">
+                        {{ form_new_cliente.email_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.email_cliente(class="form-control") }}
+                    </div>
+        
+                    <!-- Otros campos según sea necesario -->
+        
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input class="btn btn-primary" type="submit" value="Guardar">
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>
 
 
 <script>
