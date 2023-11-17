@@ -238,7 +238,7 @@ def nuevoCliente():
             return redirect(request.referrer)
        else:
             flash("error", "Error al registrar cliente!")
-            return redirect(request.referrer)
+            return redirect(request.referrer, cliente=cliente)
 @cliente.route("/consultar", methods=["POST"])
 def consultarCliente():
     form_consultar_cliente = newClienteForm()
@@ -248,10 +248,11 @@ def consultarCliente():
         cliente = consultar_cliente(id_cliente)
         if cliente:
             flash("success", "Cliente "+str(cliente.n_cliente)+" encontrado")
+            session["cliente"] = {"id_Cliente": cliente.id_cliente, "n_cliente":cliente.n_cliente, "tel_cliente":cliente.tel_cliente, "email_cliente":cliente.email_cliente} 
             return redirect(request.referrer)
         else:
             flash("error", "Cliente no encontrado")
             return redirect(request.referrer)
     else:
-        flash("success", "No se pudp validar el formulario")
+        flash("success", "No se pudo validar el formulario")
         return redirect(request.referrer)

@@ -17,6 +17,7 @@ Nueva venta
   </div>
 
 <br>
+
 <div class="container mt-4">
     <form method="POST" action="{{ url_for('cliente.consultarCliente') }}" class="form-inline">
         {{ form_consultar_cliente.hidden_tag() }}
@@ -27,6 +28,16 @@ Nueva venta
         <input class="btn btn-primary" type="submit" value="Consultar cliente">
     </form>
 </div>
+
+
+        <p>pruebaaa</p>
+        <!-- Your normal HTML content here -->
+        {% if session["cliente"] %}
+        <p> Hola {{session["cliente"]}}</p>
+        {%else %}
+        <p> No hay cliente</p>
+        {% endif %}
+
 
 
 
@@ -124,43 +135,45 @@ Nueva venta
         <form method="POST" action="{{ url_for('cliente.nuevoCliente') }}" class="ajax-form">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo cliente</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Cliente</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                    {{ form_new_cliente.hidden_tag() }}
                     {{ form_new_cliente.csrf_token }}
-
+        
                     <div class="mb-3">
                         {{ form_new_cliente.id_cliente.label(class="form-label") }}
                         {{ form_new_cliente.id_cliente(class="form-control") }}
                     </div>
-
+        
                     <div class="mb-3">
                         {{ form_new_cliente.n_cliente.label(class="form-label") }}
                         {{ form_new_cliente.n_cliente(class="form-control") }}
                     </div>
-
+        
                     <div class="mb-3">
                         {{ form_new_cliente.tel_cliente.label(class="form-label") }}
                         {{ form_new_cliente.tel_cliente(class="form-control") }}
                     </div>
-
+        
                     <div class="mb-3">
                         {{ form_new_cliente.email_cliente.label(class="form-label") }}
                         {{ form_new_cliente.email_cliente(class="form-control") }}
                     </div>
-
+        
+                    <!-- Otros campos según sea necesario -->
+        
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <input class="btn btn-primary" type="submit" value="Registrar cliente">
+                    <input class="btn btn-primary" type="submit" value="Guardar">
                 </div>
             </div>
         </form>
+        
     </div>
 </div>
-
 
 
 <script>
