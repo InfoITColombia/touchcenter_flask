@@ -14,3 +14,24 @@ form{
     padding-top: 50px;
 }
 
+.contenido .btn-primary {
+
+    margin-top: 20px;
+
+}
+
+.form-login{
+    text-align: center;
+}
+
+.form-login .user{
+    width: 200px;
+    margin-left: 45%;
+}
+
+.form-login .pass{
+    width: 200px;
+    margin-left: 45%;
+}
+
+

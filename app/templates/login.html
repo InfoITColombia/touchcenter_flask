@@ -6,12 +6,30 @@ Login
 
 
 <h1 class="login-title">Login</h1>
-<form method="POST" action="{{url_for('home.login')}}">
+
+<form class="form-login" method="POST" action="{{url_for('home.login')}}">
     
+ 
+   <h3> {{ form.usuario.label }} </h3>
     
+<<<<<<< HEAD
     {{ form.usuario.label }} {{ form.usuario(size=20, class_="form-control") }}
     {{ form.pwd_usuario.label }} {{ form.pwd_usuario(size=20, class_="form-control") }}
+=======
+   <div class="user">
+    {{ form.usuario(size=20, class_="form-control") }}
+    </div>
+    
+    <h3>{{ form.pwd_usuario.label }} </h3>
+    
+    <div class="pass">
+    {{ form.pwd_usuario(size=20, class_="form-control") }}
+    </div>
+
+    <div>
+>>>>>>> origin/frontend
     <input class="btn btn-primary" type="submit" value="Login!">
+    </div>
 </form> 
 
 
