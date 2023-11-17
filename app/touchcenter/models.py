@@ -158,3 +158,12 @@ def register_cliente(id_cliente, n_cliente, tel_cliente, email_cliente):
     except Exception as e:
         print("No se pudo registar el cliente "+str(e))
         return None
+
+def consultar_cliente (id_cliente):
+    try:
+        cliente = Cliente.query.filter_by(id_cliente=id_cliente).first()
+        print("CLIENTE!!!!")
+        return cliente
+    except Exception as e:
+        print("Error consultando cliente ")
+        return cliente

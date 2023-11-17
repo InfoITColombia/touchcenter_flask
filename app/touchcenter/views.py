@@ -145,9 +145,10 @@ def nuevaventa():
     form_new_cliente = newClienteForm()
     form_new_articulo = newArticuloForm()
     form_new_proveedor = newProveedorForm()
+    form_consultar_cliente = newClienteForm()
     form_venta  =newVentaForm()
     if request.method == "GET":
-        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_venta = form_venta)
+        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_venta = form_venta, form_consultar_cliente=form_consultar_cliente)
     if request.method == 'POST':
         k_cliente = form_venta.k_cliente.data
 
@@ -238,3 +239,19 @@ def nuevoCliente():
        else:
             flash("error", "Error al registrar cliente!")
             return redirect(request.referrer)
+@cliente.route("/consultar", methods=["POST"])
+def consultarCliente():
+    form_consultar_cliente = newClienteForm()
+    print("ESTOY AQUI")
+    if request.method == 'POST':
+        id_cliente = form_consultar_cliente.id_cliente.data
+        cliente = consultar_cliente(id_cliente)
+        if cliente:
+            flash("success", "Cliente "+str(cliente.n_cliente)+" encontrado")
+            return redirect(request.referrer)
+        else:
+            flash("error", "Cliente no encontrado")
+            return redirect(request.referrer)
+    else:
+        flash("success", "No se pudp validar el formulario")
+        return redirect(request.referrer)
