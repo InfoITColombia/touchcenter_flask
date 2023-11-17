@@ -34,6 +34,21 @@ Login
         <!-- Your normal HTML content here -->
         {% if session["cliente"] %}
         <p> Hola {{session["cliente"]}}</p>
+
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-header">
+                    Información del Cliente
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">ID {{ session["cliente"]["id_Cliente"] }}</h5>
+                    <p class="card-text">Nombre de Cliente: {{ session["cliente"]["n_cliente"] }}</p>
+                    <p class="card-text">Teléfono del Cliente: {{ session["cliente"]["tel_cliente"] }}</p>
+                    <p class="card-text">Email del Cliente: {{ session["cliente"]["email_cliente"] }}</p>
+                </div>
+            </div>
+        </div>
+
         {%else %}
         <p> No hay cliente</p>
         {% endif %}
