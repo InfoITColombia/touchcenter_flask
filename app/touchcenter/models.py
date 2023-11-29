@@ -129,6 +129,15 @@ def get_proveedores():
     print(proveedores)
     return Proveedor.query.all()
 
+def get_servicios():
+    servicios = Servicio.query.all()
+    print(servicios)
+    return servicios
+
+def get_articulos():
+    articulos = Articulo.query.all()
+    return articulos
+
 def register_articulo(n_articulo, desc_articulo, v_articulo,q_Articulo, k_proveedor):
     articulo = Articulo(n_articulo = n_articulo, desc_articulo = desc_articulo, v_articulo = v_articulo,q_Articulo = q_Articulo, k_proveedor=k_proveedor)
     try:
@@ -167,3 +176,17 @@ def consultar_cliente (id_cliente):
     except Exception as e:
         print("Error consultando cliente ")
         return cliente
+
+def new_venta(k_cliente,k_usuario,k_servicio,k_item):
+    print("FUNCION CREAR VENTA")
+
+    try:
+        venta = Venta(k_cliente = k_cliente, k_usuario = k_usuario)
+        db.session.add(venta)
+        db.session.commit()
+        print("Creando venta ")
+
+        return venta
+    except Exception as e:
+        print("Error registrando la venta ")
+        return None

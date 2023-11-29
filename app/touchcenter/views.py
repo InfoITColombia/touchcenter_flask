@@ -146,13 +146,31 @@ def nuevaventa():
     form_new_articulo = newArticuloForm()
     form_new_proveedor = newProveedorForm()
     form_consultar_cliente = newClienteForm()
-    form_venta  =newVentaForm()
+    form_new_venta  =newVentaForm()
     if request.method == "GET":
-        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_venta = form_venta, form_consultar_cliente=form_consultar_cliente)
+        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente)
+
+
+@venta.route("/registroventa/<string:k_cliente>/<string:k_usuario>", methods=["GET", "POST"])
+def registroventa(k_cliente, k_usuario):
+    form_new_cliente = newClienteForm()
+    form_new_articulo = newArticuloForm()
+    form_new_proveedor = newProveedorForm()
+    form_consultar_cliente = newClienteForm()
+    form_new_venta  =newVentaForm()
     if request.method == 'POST':
-        k_cliente = form_venta.k_cliente.data
-
-
+        print("registrando venta")
+        k_cliente = k_cliente
+        k_usuario = k_usuario
+        k_servicio = form_new_venta.k_servicio.data
+        k_item = form_new_venta.k_producto.data
+        venta = new_venta(k_cliente,k_usuario,k_servicio,k_item)
+        if venta:
+            flash("sucess", "Venta registrada!")
+            return redirect(request.referrer)
+        else:
+            flash("error","No se registro la venta ")
+            return redirect(request.referrer)
 
 @admin.route("/", methods=["GET", "POST"])
 def dash():
@@ -189,6 +207,22 @@ def JSONProveedores():
     proveedores_json = [{"label": str(proveedor.id) +" - "+ proveedor.n_proveedor, "value": str(proveedor.id) +" - "+ proveedor.n_proveedor} for proveedor in proveedores]
     print (proveedores_json)
     return jsonify(proveedores_json)
+
+@servicio.route("/JSONServicios", methods=["GET"])
+def JSONServicios():
+    servicios = get_servicios() 
+    # Puedes personalizar el formato JSON según tus necesidades
+    servicios_json = [{"label": str(servicio.id) +" - "+ servicio.n_servicio, "value": str(servicio.id) +" - "+ servicio.n_servicio} for servicio in servicios]
+    print (servicios_json)
+    return jsonify(servicios_json)
+
+@articulo.route("/JSONArticulos", methods=["GET"])
+def JSONArticulos():
+    articulos = get_articulos() 
+    # Puedes personalizar el formato JSON según tus necesidades
+    articulos_json = [{"label": str(articulo.id) +" - "+ articulo.n_articulo, "value": str(articulo.id) +" - "+ articulo.n_articulo} for articulo in articulos]
+    print (articulos_json)
+    return jsonify(articulos_json)
     
 
 @articulo.route("/nuevo", methods=["POST"])
@@ -252,6 +286,7 @@ def consultarCliente():
             return redirect(request.referrer)
         else:
             flash("error", "Cliente no encontrado")
+            session["cliente"] = None
             return redirect(request.referrer)
     else:
         flash("success", "No se pudo validar el formulario")
