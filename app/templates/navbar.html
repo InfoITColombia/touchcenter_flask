@@ -21,6 +21,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{url_for('venta.ventas')}}">Ventas</a>
                 </li>
+                {% if session["user"] %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('dash.index')}}">Dash</a>
+                </li>
+                {% endif %}
   
             </ul>
   

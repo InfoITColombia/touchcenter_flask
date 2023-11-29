@@ -188,5 +188,5 @@ def new_venta(k_cliente,k_usuario,k_servicio,k_item):
 
         return venta
     except Exception as e:
-        print("Error registrando la venta ")
+        print("Error registrando la venta " + str(e))
         return None

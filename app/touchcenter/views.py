@@ -17,7 +17,7 @@ admin = Blueprint('admin',       __name__ , url_prefix = '/admin')
 proveedor = Blueprint('proveedor', __name__ , url_prefix = '/proveedor')
 cliente = Blueprint('cliente', __name__ , url_prefix = '/cliente')
 servicio = Blueprint('servicio', __name__ , url_prefix = '/servicio')
-
+dash = Blueprint('dash', __name__ , url_prefix = '/dash')
 
 def token_required(f):
     @wraps(f)
@@ -151,14 +151,15 @@ def nuevaventa():
         return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente)
 
 
-@venta.route("/registroventa/<string:k_cliente>/<string:k_usuario>", methods=["GET", "POST"])
+@venta.route("/registroventa/<k_cliente>/<k_usuario>", methods=["GET", "POST"])
 def registroventa(k_cliente, k_usuario):
-    form_new_cliente = newClienteForm()
-    form_new_articulo = newArticuloForm()
-    form_new_proveedor = newProveedorForm()
-    form_consultar_cliente = newClienteForm()
-    form_new_venta  =newVentaForm()
-    if request.method == 'POST':
+        print("REGISTRANDO VENTA")
+        form_new_cliente = newClienteForm()
+        form_new_articulo = newArticuloForm()
+        form_new_proveedor = newProveedorForm()
+        form_consultar_cliente = newClienteForm()
+        form_new_venta  =newVentaForm()
+    
         print("registrando venta")
         k_cliente = k_cliente
         k_usuario = k_usuario
@@ -291,3 +292,4 @@ def consultarCliente():
     else:
         flash("success", "No se pudo validar el formulario")
         return redirect(request.referrer)
+
