@@ -2,17 +2,17 @@ from .config import  ProductionConfig, DevelopmentConfigMYSQL, DevelopmentConfig
 from flask import Flask, session
 
 from .database import db, ma
-from .touchcenter.views import home, venta, admin, proveedor, articulo,servicio, cliente
+from .touchcenter.views import home, venta, admin, proveedor, articulo,servicio, cliente, dash_route
 
 from flask_jwt_extended import JWTManager
 from flask import Flask, render_template
-from dash import Dash, html
-import dash_core_components as dcc
-from .dash import dash_app
+from flask_assets import Environment, Bundle
+from  .dash.dash_app import init_dashboard
+
 
 
 #ACTIVE_ENDPOINTS = [('/',home), ('/dashboard', dashboard), ('/releases', releases), ('/artists', artists), ('/purchase', purchase), ("/products", products) ]
-ACTIVE_ENDPOINTS = [('/',home), ('/articulo',articulo), ('/venta', venta), ('/admin', admin), ('/proveedor', proveedor), ("/servicio", servicio), ('/cliente', cliente)  ]
+ACTIVE_ENDPOINTS = [('/',home), ('/articulo',articulo), ('/venta', venta), ('/admin', admin), ('/proveedor', proveedor), ("/servicio", servicio), ('/cliente', cliente) , ("/dash", dash_route) ]
 
 
 def create_app(config=DevelopmentConfigMYSQL):
@@ -23,12 +23,14 @@ def create_app(config=DevelopmentConfigMYSQL):
 
     db.init_app(app)
     ma.init_app(app)
+    assets = Environment(app)
+    # Registra los activos para el Dash renderer y estilo
+    dash_renderer_bundle = Bundle('dash-renderer.js', 'dash.css', output='gen/dash_renderer.js')
+    assets.register('dash_renderer', dash_renderer_bundle)
     jwt = JWTManager(app)
     app.config['SECRET_KEY'] = 'holaMundo'
     
     
-    app_dash = Dash(__name__, server=app, url_base_pathname='/dash/')
-    app_dash.layout =dash_app.main_app_dash.layout
 
     with app.app_context():
         database.create_all()
@@ -37,11 +39,14 @@ def create_app(config=DevelopmentConfigMYSQL):
     for url, blueprint in ACTIVE_ENDPOINTS:
         app.register_blueprint(blueprint, url_prefix=url)
 
+    app = init_dashboard(app)
     return app
 
 
 
 if __name__ == "__main__":
     app_flask = create_app()
+    for rule in app_flask.url_map.iter_rules():
+        print(f"Endpoint: {rule.endpoint}, Methods: {', '.join(rule.methods)}, Path: {rule.rule}")
     print("DEBUG" + str(app_flask.debug))
     app_flask.run()

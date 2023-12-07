@@ -23,7 +23,7 @@
                 </li>
                 {% if session["user"] %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('dash.index')}}">Dash</a>
+                    <a class="nav-link" href="{{url_for('dash_route.load_dash')}}">Dash</a>
                 </li>
                 {% endif %}
   

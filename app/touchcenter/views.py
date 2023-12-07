@@ -9,6 +9,8 @@ from functools import wraps
 import jwt
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from ..dash.dash_app import main_app_dash
+
 
 home = Blueprint('home', __name__)
 articulo = Blueprint('articulo', __name__ , url_prefix = '/articulo')
@@ -17,7 +19,7 @@ admin = Blueprint('admin',       __name__ , url_prefix = '/admin')
 proveedor = Blueprint('proveedor', __name__ , url_prefix = '/proveedor')
 cliente = Blueprint('cliente', __name__ , url_prefix = '/cliente')
 servicio = Blueprint('servicio', __name__ , url_prefix = '/servicio')
-dash = Blueprint('dash', __name__ , url_prefix = '/dash')
+dash_route = Blueprint('dash_route', __name__ , url_prefix = '/dash')
 
 def token_required(f):
     @wraps(f)
@@ -293,3 +295,17 @@ def consultarCliente():
         flash("success", "No se pudo validar el formulario")
         return redirect(request.referrer)
 
+
+@dash_route.route("/", methods=["GET"])
+def load_dash():
+    #dash_url = url_for('main_app_dash') 
+
+    #return render_template('dash_app.html', dash_url=dash_url)
+    return render_template('dash_app.html',         title='Plotly Dash Flask Tutorial',
+        description='Embed Plotly Dash into your Flask applications.',
+        template='home-template',
+        body="This is a homepage served with Flask.")
+
+@dash_route.route("/dashboard", methods=["GET"])
+def dashboard():
+    return main_app_dash.layout
