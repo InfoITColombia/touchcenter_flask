@@ -46,7 +46,6 @@ def create_app(config=DevelopmentConfigMYSQL):
 
 if __name__ == "__main__":
     app_flask = create_app()
-    for rule in app_flask.url_map.iter_rules():
-        print(f"Endpoint: {rule.endpoint}, Methods: {', '.join(rule.methods)}, Path: {rule.rule}")
+
     print("DEBUG" + str(app_flask.debug))
     app_flask.run()

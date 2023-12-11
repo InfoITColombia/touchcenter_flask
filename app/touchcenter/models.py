@@ -95,6 +95,11 @@ class UsuarioSchema(ma.SQLAlchemyAutoSchema):
         model = Usuario
         fields = ["n_usuario", "pwd_usuario"]
 
+class ServicioSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Servicio
+        fields = ["id", "n_servicio"]
+
 
 
 def get_user_by_usuario(usuario):
@@ -190,3 +195,9 @@ def new_venta(k_cliente,k_usuario,k_servicio,k_item):
     except Exception as e:
         print("Error registrando la venta " + str(e))
         return None
+
+def get_servicio_by_id(k_servicio):
+    servicio_qs = Servicio.query.filter_by(id = k_servicio).first()
+    servicio_schema = ServicioSchema()
+    s = servicio_schema.dump(servicio_qs)
+    return s

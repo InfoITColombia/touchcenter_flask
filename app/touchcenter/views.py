@@ -25,16 +25,11 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         try:
-            #token = session.get("user")[0]["access_token"]
             token = session.get("user")["access_token"]
-            #print("TOKEN " +  token)
             if not token:
                 flash("error", "Error de sesión! "+str(e))
 
                 return redirect(url_for('home.logout'))
-
-
-
             data = jwt.decode(token, "holaMundo", algorithms=["HS256"])
             # Realiza cualquier otra validación que necesites aquí
         except jwt.ExpiredSignatureError as e:
@@ -90,6 +85,7 @@ def login():
             #flash('info', "Bienvenido")
             access_token = create_access_token(identity=user["n_usuario"], expires_delta= conf.TOKEN_EXPIRES)
             session["user"] = {"n_usuario":user["n_usuario"],  "access_token":access_token} 
+            #Ssession["servicios"] = []
             print(session["user"])
             return redirect(url_for('home.index'))
         else:
@@ -100,7 +96,6 @@ def login():
 def logout():
     g.user=None
     session.pop("user", None)
-    print("Se cerró sesión")
     return redirect(url_for('home.login',user=g.user))
         
 
@@ -150,7 +145,8 @@ def nuevaventa():
     form_consultar_cliente = newClienteForm()
     form_new_venta  =newVentaForm()
     if request.method == "GET":
-        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente)
+        print("LA SESION ESSS ", session)
+        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente, servicios = session["servicios"])
 
 
 @venta.route("/registroventa/<k_cliente>/<k_usuario>", methods=["GET", "POST"])
@@ -174,6 +170,32 @@ def registroventa(k_cliente, k_usuario):
         else:
             flash("error","No se registro la venta ")
             return redirect(request.referrer)
+
+@venta.route("/sessionServicio", methods = ["POST"])
+def sessionServicio():
+    form_new_venta  =newVentaForm()
+    k_servicio = form_new_venta.k_servicio.data.split(" - ")[0]
+    print("servicio elegido !!!! ", k_servicio)
+    servicio = get_servicio_by_id(k_servicio)
+    if servicio:
+        servicios = session.get("servicios", [])
+        
+        # Verifica si el servicio ya está en la lista
+        if servicio not in servicios:
+            servicios.append(servicio)
+            session["servicios"] = servicios
+            flash("success", "Servicio agregado correctamente.")
+        else:
+            flash("info", "El servicio ya está en la lista.")
+    else:
+        flash("error", "No se encontró el servicio elegido.")
+    #return redirect(request.referrer)
+    form_new_cliente = newClienteForm()
+    form_new_articulo = newArticuloForm()
+    form_new_proveedor = newProveedorForm()
+    form_consultar_cliente = newClienteForm()
+    form_new_venta  =newVentaForm()
+    return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente, servicios = session["servicios"])
 
 @admin.route("/", methods=["GET", "POST"])
 def dash():
@@ -199,32 +221,24 @@ def nuevoProveedor():
         else:
                 flash( "error", "Error al registrar proveedor")
                 return redirect(request.referrer)
-
-    # Manejo adicional para solicitudes GET o si la validación del formulario falla
     return render_template('tu_template.html', form_new_proveedor=form_new_proveedor)
 
 @proveedor.route("/JSONProveedores", methods=["GET"])
 def JSONProveedores():
     proveedores = get_proveedores() 
-    # Puedes personalizar el formato JSON según tus necesidades
     proveedores_json = [{"label": str(proveedor.id) +" - "+ proveedor.n_proveedor, "value": str(proveedor.id) +" - "+ proveedor.n_proveedor} for proveedor in proveedores]
-    print (proveedores_json)
     return jsonify(proveedores_json)
 
 @servicio.route("/JSONServicios", methods=["GET"])
 def JSONServicios():
     servicios = get_servicios() 
-    # Puedes personalizar el formato JSON según tus necesidades
     servicios_json = [{"label": str(servicio.id) +" - "+ servicio.n_servicio, "value": str(servicio.id) +" - "+ servicio.n_servicio} for servicio in servicios]
-    print (servicios_json)
     return jsonify(servicios_json)
 
 @articulo.route("/JSONArticulos", methods=["GET"])
 def JSONArticulos():
     articulos = get_articulos() 
-    # Puedes personalizar el formato JSON según tus necesidades
     articulos_json = [{"label": str(articulo.id) +" - "+ articulo.n_articulo, "value": str(articulo.id) +" - "+ articulo.n_articulo} for articulo in articulos]
-    print (articulos_json)
     return jsonify(articulos_json)
     
 
@@ -238,7 +252,6 @@ def nuevoArticulo():
         q_Articulo = form_new_articulo.q_articulo.data
         #k_proveedor = form_new_articulo.k_proveedor.data
         n_proveedor = form_new_articulo.n_proveedor.data
-        print("el proveedor elegido es "+str(n_proveedor))
         articulo = register_articulo(n_articulo, desc_articulo, v_articulo,q_Articulo, n_proveedor.split(" - ",1)[0])
         if articulo:
                 flash( "success", "Articulo registrado exitosamente")
@@ -276,10 +289,10 @@ def nuevoCliente():
        else:
             flash("error", "Error al registrar cliente!")
             return redirect(request.referrer, cliente=cliente)
+
 @cliente.route("/consultar", methods=["POST"])
 def consultarCliente():
     form_consultar_cliente = newClienteForm()
-    print("ESTOY AQUI")
     if request.method == 'POST':
         id_cliente = form_consultar_cliente.id_cliente.data
         cliente = consultar_cliente(id_cliente)
@@ -304,7 +317,7 @@ def load_dash():
     return render_template('dash_app.html',         title='Plotly Dash Flask Tutorial',
         description='Embed Plotly Dash into your Flask applications.',
         template='home-template',
-        body="This is a homepage served with Flask.")
+        body="This is a homepage served with Flask." )
 
 @dash_route.route("/dashboard", methods=["GET"])
 def dashboard():
