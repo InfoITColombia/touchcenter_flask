@@ -85,7 +85,8 @@ def login():
             #flash('info', "Bienvenido")
             access_token = create_access_token(identity=user["n_usuario"], expires_delta= conf.TOKEN_EXPIRES)
             session["user"] = {"n_usuario":user["n_usuario"],  "access_token":access_token} 
-            #Ssession["servicios"] = []
+            session["servicios"] = []
+            session["items"] = []
             print(session["user"])
             return redirect(url_for('home.index'))
         else:
@@ -145,6 +146,7 @@ def nuevaventa():
     form_consultar_cliente = newClienteForm()
     form_new_venta  =newVentaForm()
     if request.method == "GET":
+        
         print("LA SESION ESSS ", session)
         return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente, servicios = session["servicios"])
 
@@ -189,13 +191,22 @@ def sessionServicio():
             flash("info", "El servicio ya está en la lista.")
     else:
         flash("error", "No se encontró el servicio elegido.")
-    #return redirect(request.referrer)
-    form_new_cliente = newClienteForm()
-    form_new_articulo = newArticuloForm()
-    form_new_proveedor = newProveedorForm()
-    form_consultar_cliente = newClienteForm()
+    return redirect(request.referrer)
+    
+@venta.route("/sessionProducto/<k_servicio>", methods = ["POST"])
+def sessionProducto(k_servicio):
     form_new_venta  =newVentaForm()
-    return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente, servicios = session["servicios"])
+    k_producto = form_new_venta.k_producto.data.split(" - ")[0]
+    item = Item(k_articulo = k_producto, k_servicio = k_servicio )
+    item_schema = ItemSchema()
+    i = item_schema.dump(item)
+    items = session.get("items", [])
+    print("ITEMS AL MOMENTO ES ", items)
+    #print(k_producto)
+    items.append(i)
+    session["items"] = items
+    #flash("success", "Producto agregado correctamente.")
+    return redirect(request.referrer)
 
 @admin.route("/", methods=["GET", "POST"])
 def dash():

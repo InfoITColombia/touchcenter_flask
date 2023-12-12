@@ -29,6 +29,16 @@ Login
     </form>
 </div>
 
+<p>VOY A VALIDAR EL IF</p>
+{% for item in session["items"] %}
+{%if item["k_servicio"]|int == 3%}
+<p>ENTRE AL IF</p>
+<p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} -- SERVICIO {{item["k_servicio"]}}</p>
+{%else%}
+<p>NO ENTRÓ AL IF</p>
+<p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} -- SERVICIO {{item["k_servicio"]}}</p>
+{%endif%}
+{% endfor %}
 
 <div class="container mt-5">
         <!-- Your normal HTML content here -->
@@ -55,6 +65,28 @@ Login
             <ul class="list-group">
                 {% for servicio in servicios %}
                     <li class="list-group-item">ID: {{ servicio["id"] }}, Nombre del Servicio: {{ servicio["n_servicio"] }}</li>
+
+
+                        {% for item in session["items"] %}
+                        {%if item["k_servicio"]|int == servicio["id"]|int %}
+                        <p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} -- SERVICIO {{item["k_servicio"]}}, SERVICIO UPPER {{servicio["id"]}}</p>
+                        {%endif%}
+                        {% endfor %}
+
+
+
+                    <div class ="card">  
+                        <form method="POST" action="{{url_for('venta.sessionProducto', k_servicio = servicio["id"]) }}" class="ajax-form">
+                            <div class="mb-3">
+                                <label for="k_producto" class="form-label">Nombre del Producto</label>
+                                {{ form_new_venta.k_producto(class="form-control", id="k_producto_servicio_" + servicio["id"]|string) }}
+                         </div>
+                        
+                            <input class="btn btn-primary" type="submit" value="Enviar">
+                        </form>
+
+                    </div>
+
                 {% endfor %}
             </ul>
 
@@ -73,7 +105,7 @@ Login
                 </form>
             </div>
 
-
+            <!--
         <div class ="card">  
             <form method="POST" action="{{url_for('venta.registroventa', k_cliente=session["cliente"]["id_Cliente"], k_usuario=session["user"].n_usuario) }}" class="ajax-form">
                 {{ form_new_venta.hidden_tag() }}
@@ -92,6 +124,7 @@ Login
                 <input class="btn btn-primary" type="submit" value="Enviar">
             </form>
         </div>
+        -->
 
         {%else %}
         <p> No hay cliente</p>
@@ -235,6 +268,23 @@ Login
     </div>
 </div>
 
+{% for servicio in servicios %}
+<script>
+    
+    $(function(){
+        $.ajax({
+            url: '{{ url_for("articulo.JSONArticulos") }}'
+        }).done(function(data){
+            $('#k_producto_servicio_{{ servicio["id"] }}').autocomplete({
+                
+                source:data,
+                
+                minLenght:1
+            });
+        });
+    });
+</script>
+{%endfor%}
 
 <script>
     

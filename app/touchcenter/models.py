@@ -100,6 +100,11 @@ class ServicioSchema(ma.SQLAlchemyAutoSchema):
         model = Servicio
         fields = ["id", "n_servicio"]
 
+class ItemSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model : Item
+        fields = ["k_venta", "k_servicio", "k_articulo" , "q_item " , "vu_item", "articulo"]
+
 
 
 def get_user_by_usuario(usuario):
@@ -201,3 +206,10 @@ def get_servicio_by_id(k_servicio):
     servicio_schema = ServicioSchema()
     s = servicio_schema.dump(servicio_qs)
     return s
+
+def  crear_item_producto(k_producto):
+    item_qs = Articulo.query.filter_by(id = k_producto).first()
+    item_schema = ItemSchema()
+    i = item_schema.dump(item_qs)
+    
+    return i
