@@ -105,6 +105,11 @@ class ItemSchema(ma.SQLAlchemyAutoSchema):
         model : Item
         fields = ["k_venta", "k_servicio", "k_articulo" , "q_item " , "vu_item", "articulo"]
 
+class ArticuloSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model : Articulo
+        fields = ["id", "n_articulo", "desc_articulo", "v_articulo", "q_articulo"]
+
 
 
 def get_user_by_usuario(usuario):
@@ -187,11 +192,18 @@ def consultar_cliente (id_cliente):
         print("Error consultando cliente ")
         return cliente
 
-def new_venta(k_cliente,k_usuario,k_servicio,k_item):
-    print("FUNCION CREAR VENTA")
-
+def new_venta(k_cliente,k_usuario, items):
+    print("FUNCION CREAR VENTA>>>>>> cliente es ", k_cliente, "yo soy  ", k_usuario)
+    
     try:
-        venta = Venta(k_cliente = k_cliente, k_usuario = k_usuario)
+        lstItems = []
+        lstServicios = []
+        for item in items:
+            i = Item(k_articulo =  item["k_articulo"], k_servicio =  item["k_servicio"], q_item =  item["q_item"], vu_item = item["vu_item"] )
+            lstItems.append(i)
+            s = Servicio()
+
+        venta = Venta(k_cliente = k_cliente, k_usuario = k_usuario, v_total_venta=0)
         db.session.add(venta)
         db.session.commit()
         print("Creando venta ")
@@ -206,6 +218,12 @@ def get_servicio_by_id(k_servicio):
     servicio_schema = ServicioSchema()
     s = servicio_schema.dump(servicio_qs)
     return s
+
+def get_articulo_by_id(k_producto):
+    articulo_qs = Articulo.query.filter_by(id = k_producto).first()
+    articulo_schema = ArticuloSchema()
+    a = articulo_schema.dump(articulo_qs)
+    return a
 
 def  crear_item_producto(k_producto):
     item_qs = Articulo.query.filter_by(id = k_producto).first()

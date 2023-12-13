@@ -44,3 +44,4 @@ class newVentaForm(FlaskForm):
     #k_cliente = StringField('Nombre servicio', validators=[DataRequired()])
     k_servicio = StringField('Servicio ', validators=[DataRequired()])
     k_producto = StringField('Nombre producto ', id="k_producto", validators=[DataRequired()])
+    q_item = IntegerField('Cantidad ', validators=[DataRequired()])

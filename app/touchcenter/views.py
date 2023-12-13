@@ -153,19 +153,11 @@ def nuevaventa():
 
 @venta.route("/registroventa/<k_cliente>/<k_usuario>", methods=["GET", "POST"])
 def registroventa(k_cliente, k_usuario):
-        print("REGISTRANDO VENTA")
-        form_new_cliente = newClienteForm()
-        form_new_articulo = newArticuloForm()
-        form_new_proveedor = newProveedorForm()
-        form_consultar_cliente = newClienteForm()
-        form_new_venta  =newVentaForm()
-    
-        print("registrando venta")
         k_cliente = k_cliente
+        k_cliente = 1
         k_usuario = k_usuario
-        k_servicio = form_new_venta.k_servicio.data
-        k_item = form_new_venta.k_producto.data
-        venta = new_venta(k_cliente,k_usuario,k_servicio,k_item)
+
+        venta = new_venta(k_cliente,k_usuario, session["items"])
         if venta:
             flash("sucess", "Venta registrada!")
             return redirect(request.referrer)
@@ -197,7 +189,8 @@ def sessionServicio():
 def sessionProducto(k_servicio):
     form_new_venta  =newVentaForm()
     k_producto = form_new_venta.k_producto.data.split(" - ")[0]
-    item = Item(k_articulo = k_producto, k_servicio = k_servicio )
+    articulo = get_articulo_by_id(k_producto)
+    item = Item(k_articulo = k_producto, k_servicio = k_servicio, q_item = 1, vu_item = articulo["v_articulo"]  )
     item_schema = ItemSchema()
     i = item_schema.dump(item)
     items = session.get("items", [])
@@ -207,6 +200,22 @@ def sessionProducto(k_servicio):
     session["items"] = items
     #flash("success", "Producto agregado correctamente.")
     return redirect(request.referrer)
+
+@venta.route("/sessionItemQuantity/<k_servicio>/<k_articulo>", methods = ["PUT", "POST"])
+def sessionItemQuantity(k_servicio, k_articulo):
+    if request.method == 'POST':
+        # Lógica para manejar la actualización de la cantidad aquí
+        nueva_cantidad = request.form.get(f'cantidad_nueva_{k_articulo}')
+        print("Hola Mundo, cantidad es ", nueva_cantidad)
+        items = session.get("items", [])
+        for i in items:
+            if i["k_articulo"] == k_articulo and i["k_servicio"] == k_servicio:
+                i["q_item"] = nueva_cantidad
+        session["items"] = items
+        return redirect(request.referrer)
+    if request.method == "GET":
+        redirect(url_for("venta.nuevaventa"))
+
 
 @admin.route("/", methods=["GET", "POST"])
 def dash():

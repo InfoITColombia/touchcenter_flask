@@ -5,9 +5,9 @@ Login
 {%block contenido%}
 
 
-<h1 class="title-nventa"> Nueva Venta </h1>
+<h3 class="title-nventa"> Nueva Venta </h3>
 
-<br>
+
 
 <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ProveedorModal">Nuevo proveedor</button>
@@ -16,7 +16,7 @@ Login
 
   </div>
 
-<br>
+ 
 
 <div class="container mt-4">
     <form method="POST" action="{{ url_for('cliente.consultarCliente') }}" class="form-inline">
@@ -29,16 +29,7 @@ Login
     </form>
 </div>
 
-<p>VOY A VALIDAR EL IF</p>
-{% for item in session["items"] %}
-{%if item["k_servicio"]|int == 3%}
-<p>ENTRE AL IF</p>
-<p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} -- SERVICIO {{item["k_servicio"]}}</p>
-{%else%}
-<p>NO ENTRÓ AL IF</p>
-<p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} -- SERVICIO {{item["k_servicio"]}}</p>
-{%endif%}
-{% endfor %}
+
 
 <div class="container mt-5">
         <!-- Your normal HTML content here -->
@@ -69,7 +60,16 @@ Login
 
                         {% for item in session["items"] %}
                         {%if item["k_servicio"]|int == servicio["id"]|int %}
-                        <p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} -- SERVICIO {{item["k_servicio"]}}, SERVICIO UPPER {{servicio["id"]}}</p>
+                        
+                        <form method="POST" action="{{url_for('venta.sessionItemQuantity', k_servicio = servicio["id"], k_articulo = item["k_articulo"]) }}" class="ajax-form">
+                            <p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} - Valor: {{item["vu_item"]}} -- SERVICIO {{item["k_servicio"]}}</p>
+                            <div class="mb-3">
+                                <label for="cantidad_nueva_{{ item['k_articulo'] }}" class="form-label">Nueva Cantidad</label>
+                                <input type="number" name="cantidad_nueva_{{ item['k_articulo'] }}" id="cantidad_nueva_{{ item['k_articulo'] }}" class="form-control" value="{{ item['q_item'] }}">
+                            </div>
+                            
+                            <input type="submit" class="btn btn-primary" value="Actualizar Cantidad">
+                        </form>
                         {%endif%}
                         {% endfor %}
 
@@ -132,6 +132,15 @@ Login
     </div>
 
 
+
+    <div class ="card">  
+        <form method="POST" action="{{url_for('venta.registroventa', k_cliente=session["cliente"]["id_Cliente"], k_usuario=session["user"].n_usuario) }}" class="ajax-form">
+            {{ form_new_venta.hidden_tag() }}
+            {{ form_new_venta.csrf_token }}
+        
+            <input class="btn btn-primary" type="submit" value="Registrar Venta">
+        </form>
+    </div>
 
 <!-- Modal -->
 <div class="modal fade" id="ProveedorModal" tabindex="-1" aria-labelledby="ProveedorModalLabel" aria-hidden="true">
