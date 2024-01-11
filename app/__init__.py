@@ -7,7 +7,7 @@ from .touchcenter.views import home, venta, admin, proveedor, articulo,servicio,
 from flask_jwt_extended import JWTManager
 from flask import Flask, render_template
 from flask_assets import Environment, Bundle
-from  .dash.dash_app import init_dashboard
+from .touchcenter.dash.dash_app import init_dashboard
 
 
 
@@ -34,12 +34,14 @@ def create_app(config=DevelopmentConfigSQLITE):
 
     with app.app_context():
         database.create_all()
+        init_dashboard(app, database.db)
 
     # register each active blueprint
     for url, blueprint in ACTIVE_ENDPOINTS:
         app.register_blueprint(blueprint, url_prefix=url)
 
-    app = init_dashboard(app)
+    
+    #app = config_dash(db, app)
     return app
 
 

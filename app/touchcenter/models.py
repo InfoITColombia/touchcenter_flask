@@ -13,6 +13,8 @@ class Proveedor(db.Model):
     tel_proveedor = db.Column(db.String(50))
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
+    #atributos de la relacion
+    #articulos = db.relationship('Articulo', backref='proveedor', lazy=True)
 
 class Articulo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -25,7 +27,8 @@ class Articulo(db.Model):
     #Llaves foráneas
     k_proveedor = db.Column(db.Integer, db.ForeignKey("proveedor.id"))
     #atributos de la relacion
-    proveedor = db.relationship("Proveedor")
+    proveedor= db.relationship('Proveedor')
+ 
 
 class Servicio(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -118,6 +121,9 @@ def get_user_by_usuario(usuario):
     u = usuario_schema.dump(usuario_qs)
     return u
 
+def get_proveedores():
+    return Proveedor.query.all()
+
 
 def register_user(usuario, pwd, tipo):
     usuario = Usuario(n_usuario = usuario,pwd_usuario=pwd, tipo_usuario = tipo)
@@ -139,10 +145,6 @@ def register_proveedor(nombre,dir, tel):
         print ("No se registró el proveedor "+ str(e))
         return None 
 
-def get_proveedores():
-    proveedores = Proveedor.query.all()
-    print(proveedores)
-    return Proveedor.query.all()
 
 def get_servicios():
     servicios = Servicio.query.all()
@@ -202,7 +204,8 @@ def new_venta(k_cliente,k_usuario, items):
         for item in items:
             i = Item(k_articulo =  item["k_articulo"], k_servicio =  item["k_servicio"], q_item =  item["q_item"], vu_item = item["vu_item"] )
             lstItems.append(i)
-            s = Servicio()
+            s = Servicio_Venta(k_servicio = item["k_servicio"], v_agregado = 1000)
+            lstServicios.append(s)
             total += float(item["vu_item"]) * int(item["q_item"])
 
 

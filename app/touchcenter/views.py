@@ -9,7 +9,7 @@ from functools import wraps
 import jwt
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..dash.dash_app import main_app_dash
+
 
 
 home = Blueprint('home', __name__)
@@ -340,6 +340,3 @@ def load_dash():
         template='home-template',
         body="This is a homepage served with Flask." )
 
-@dash_route.route("/dashboard", methods=["GET"])
-def dashboard():
-    return main_app_dash.layout

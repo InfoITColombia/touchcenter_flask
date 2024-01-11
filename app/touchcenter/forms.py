@@ -39,7 +39,7 @@ class newClienteForm(FlaskForm):
 class newServicioForm(FlaskForm):
     n_servicio = StringField('Nombre servicio', validators=[DataRequired()])
     desc_servicio = StringField('Descripción servicio', validators=[DataRequired()])
-    v_agregado = DecimalField(places=2, validators=[DataRequired()])
+    #v_agregado = DecimalField(places=2, validators=[DataRequired()])
 
 class newVentaForm(FlaskForm):
     #k_cliente = StringField('Nombre servicio', validators=[DataRequired()])
