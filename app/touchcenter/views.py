@@ -87,6 +87,7 @@ def login():
             session["user"] = {"n_usuario":user["n_usuario"],  "access_token":access_token} 
             session["servicios"] = []
             session["items"] = []
+            session["cliente"] = []
             print(session["user"])
             return redirect(url_for('home.index'))
         else:

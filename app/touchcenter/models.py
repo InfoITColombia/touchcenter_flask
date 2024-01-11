@@ -23,7 +23,7 @@ class Articulo(db.Model):
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
     #Llaves foráneas
-    k_proveedor = db.Column(db.Integer, db.ForeignKey("proveedor.id") ,primary_key=True)
+    k_proveedor = db.Column(db.Integer, db.ForeignKey("proveedor.id"))
     #atributos de la relacion
     proveedor = db.relationship("Proveedor")
 
@@ -193,20 +193,37 @@ def consultar_cliente (id_cliente):
         return cliente
 
 def new_venta(k_cliente,k_usuario, items):
-    print("FUNCION CREAR VENTA>>>>>> cliente es ", k_cliente, "yo soy  ", k_usuario)
+    print("FUNCION CREAR VENTA>>>>>> cliente es ", k_cliente, "yo soy  ", k_usuario, items)
     
     try:
         lstItems = []
         lstServicios = []
+        total = 0
         for item in items:
             i = Item(k_articulo =  item["k_articulo"], k_servicio =  item["k_servicio"], q_item =  item["q_item"], vu_item = item["vu_item"] )
             lstItems.append(i)
             s = Servicio()
+            total += float(item["vu_item"]) * int(item["q_item"])
 
-        venta = Venta(k_cliente = k_cliente, k_usuario = k_usuario, v_total_venta=0)
+
+        venta = Venta(k_cliente = k_cliente, k_usuario = k_usuario, v_total_venta=total)
+        
         db.session.add(venta)
         db.session.commit()
-        print("Creando venta ")
+        id_venta_generada = venta.id
+        print("ID VENTA ES ", str(id_venta_generada))
+        for item in lstItems:
+            item.k_venta = venta.id
+            db.session.add(item)
+        
+        for servicio in lstServicios:
+            servicio.k_venta = venta.id
+            db.session.add(servicio)
+        
+
+
+        db.session.commit()
+        print("Venta creada!!!")
 
         return venta
     except Exception as e:

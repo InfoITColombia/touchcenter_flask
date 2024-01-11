@@ -55,40 +55,45 @@ Login
 
             <ul class="list-group">
                 {% for servicio in servicios %}
-                    <li class="list-group-item">ID: {{ servicio["id"] }}, Nombre del Servicio: {{ servicio["n_servicio"] }}</li>
-
-
+                    <li class="list-group-item">
+                        <strong>ID:</strong> {{ servicio["id"] }}, <strong>Nombre del Servicio:</strong> {{ servicio["n_servicio"] }}
                         {% for item in session["items"] %}
-                        {%if item["k_servicio"]|int == servicio["id"]|int %}
-                        
-                        <form method="POST" action="{{url_for('venta.sessionItemQuantity', k_servicio = servicio["id"], k_articulo = item["k_articulo"]) }}" class="ajax-form">
-                            <p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} - Valor: {{item["vu_item"]}} -- SERVICIO {{item["k_servicio"]}}</p>
-                            <div class="mb-3">
-                                <label for="cantidad_nueva_{{ item['k_articulo'] }}" class="form-label">Nueva Cantidad</label>
-                                <input type="number" name="cantidad_nueva_{{ item['k_articulo'] }}" id="cantidad_nueva_{{ item['k_articulo'] }}" class="form-control" value="{{ item['q_item'] }}">
-                            </div>
-                            
-                            <input type="submit" class="btn btn-primary" value="Actualizar Cantidad">
-                        </form>
-                        {%endif%}
+                            {% if item["k_servicio"]|int == servicio["id"]|int %}
+                                <form method="POST" action="{{url_for('venta.sessionItemQuantity', k_servicio=servicio["id"], k_articulo=item["k_articulo"]) }}" class="ajax-form">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} - Valor: {{ item["vu_item"] }} -- SERVICIO {{ item["k_servicio"] }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="cantidad_nueva_{{ item['k_articulo'] }}" class="form-label">Nueva Cantidad</label>
+                                            <input type="number" name="cantidad_nueva_{{ item['k_articulo'] }}" id="cantidad_nueva_{{ item['k_articulo'] }}" class="form-control" value="{{ item['q_item'] }}">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="submit" class="btn btn-primary" value="Actualizar Cantidad">
+                                        </div>
+                                    </div>
+                                </form>
+                            {% endif %}
                         {% endfor %}
-
-
-
-                    <div class ="card">  
-                        <form method="POST" action="{{url_for('venta.sessionProducto', k_servicio = servicio["id"]) }}" class="ajax-form">
-                            <div class="mb-3">
-                                <label for="k_producto" class="form-label">Nombre del Producto</label>
-                                {{ form_new_venta.k_producto(class="form-control", id="k_producto_servicio_" + servicio["id"]|string) }}
-                         </div>
-                        
-                            <input class="btn btn-primary" type="submit" value="Enviar">
-                        </form>
-
-                    </div>
+                        <div class="card mt-3">
+                            <form method="POST" action="{{url_for('venta.sessionProducto', k_servicio=servicio["id"]) }}" class="ajax-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="k_producto" class="form-label">Nombre del Producto</label>
+                                        {{ form_new_venta.k_producto(class="form-control", id="k_producto_servicio_" + servicio["id"]|string) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input class="btn btn-primary" type="submit" value="Enviar">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
 
                 {% endfor %}
             </ul>
+            
+            
 
             <!--AGREGAR SERVICIO -->
             <div class ="card">

@@ -15,7 +15,7 @@ from  .dash.dash_app import init_dashboard
 ACTIVE_ENDPOINTS = [('/',home), ('/articulo',articulo), ('/venta', venta), ('/admin', admin), ('/proveedor', proveedor), ("/servicio", servicio), ('/cliente', cliente) , ("/dash", dash_route) ]
 
 
-def create_app(config=DevelopmentConfigMYSQL):
+def create_app(config=DevelopmentConfigSQLITE):
     app = Flask(__name__)
     app.debug = True 
     app.config.from_object(config)
