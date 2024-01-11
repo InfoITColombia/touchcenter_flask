@@ -8,5 +8,201 @@ Admin
 
 <br>
 
+<div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ProveedorModal">Nuevo proveedor</button>
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ArticuloModal">Nuevo producto</button>
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ClienteModal">Nuevo cliente</button>
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ServicioModal">Nuevo servicio</button>
+
+  </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="ProveedorModal" tabindex="-1" aria-labelledby="ProveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+
+      <form method="POST" action="{{url_for('proveedor.nuevoProveedor')}}" class="ajax-form">
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo proveedor</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ form_new_proveedor.hidden_tag() }}
+        {{ form_new_proveedor.csrf_token }}
+
+        <div class="mb-3">
+            {{ form_new_proveedor.n_proveedor.label(class="form-label") }}
+            {{ form_new_proveedor.n_proveedor(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_new_proveedor.dir_proveedor.label(class="form-label") }}
+            {{ form_new_proveedor.dir_proveedor(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_new_proveedor.tel_proveedor.label(class="form-label") }}
+            {{ form_new_proveedor.tel_proveedor(class="form-control") }}
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <input class="btn btn-primary" type="submit" value="Guardar">
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="ArticuloModal" tabindex="-1" aria-labelledby="ArticuloModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ url_for('articulo.nuevoArticulo') }}" class="ajax-form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo artículo</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_new_articulo.hidden_tag() }}
+                    {{ form_new_articulo.csrf_token }}
+
+                    <div class="mb-3">
+                        {{ form_new_articulo.n_articulo.label(class="form-label") }}
+                        {{ form_new_articulo.n_articulo(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_new_articulo.desc_articulo.label(class="form-label") }}
+                        {{ form_new_articulo.desc_articulo(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_new_articulo.v_articulo.label(class="form-label") }}
+                        {{ form_new_articulo.v_articulo(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_new_articulo.q_articulo.label(class="form-label") }}
+                        {{ form_new_articulo.q_articulo(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_new_articulo.n_proveedor.label(class="form-label") }}
+                        {{ form_new_articulo.n_proveedor(class="form-control", id="autocomplete-proveedor") }}
+                    </div>
+
+                    <!-- Campo oculto para almacenar el ID del proveedor -->
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input class="btn btn-primary" type="submit" value="Guardar">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ServicioModal" tabindex="-1" aria-labelledby="ServicioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ url_for('servicio.nuevoServicio') }}" class="ajax-form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo servicio</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_new_servicio.hidden_tag() }}
+                    {{ form_new_servicio.csrf_token }}
+
+                    <div class="mb-3">
+                        {{ form_new_servicio.n_servicio.label(class="form-label") }}
+                        {{ form_new_servicio.n_servicio(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_new_servicio.desc_servicio.label(class="form-label") }}
+                        {{ form_new_servicio.desc_servicio(class="form-control") }}
+                    </div>
+
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input class="btn btn-primary" type="submit" value="Guardar">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="ClienteModal" tabindex="-1" aria-labelledby="ClienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ url_for('cliente.nuevoCliente') }}" class="ajax-form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo servicio</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_new_cliente.hidden_tag() }}
+                    {{ form_new_cliente.csrf_token }}
+                
+                    <div class="mb-3">
+                        {{ form_new_cliente.id_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.id_cliente(class="form-control") }}
+                    </div>
+                
+                    <div class="mb-3">
+                        {{ form_new_cliente.n_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.n_cliente(class="form-control") }}
+                    </div>
+                
+                    <div class="mb-3">
+                        {{ form_new_cliente.tel_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.tel_cliente(class="form-control") }}
+                    </div>
+                
+                    <div class="mb-3">
+                        {{ form_new_cliente.email_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.email_cliente(class="form-control") }}
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input class="btn btn-primary" type="submit" value="Guardar">
+                </div>
+            </div>
+        </form>
+
+
+<script>
+  $(function() {
+      $.ajax({
+          url: '{{ url_for("proveedor.JSONProveedores") }}'
+      }).done(function (data){
+          console.log(data)
+          $('#autocomplete-proveedor').autocomplete({
+              source: data,
+              minLength: 2,
+              select: function(event, ui) {
+                k_proveedor = ui.item.label
+                console.log("K_PROVEEDOR ES "+k_proveedor)
+                  // Asigna el nombre del proveedor al campo n_proveedor
+                  $('#autocomplete-proveedor').val(ui.item.label);
+              }
+          });
+      });
+  });
+</script>
+
+
+
+
 
 {%endblock%}

@@ -30,4 +30,19 @@ class newProveedorForm(FlaskForm):
     dir_proveedor = StringField('Dirección', validators=[DataRequired()])
     tel_proveedor = StringField('Teléfono', validators=[DataRequired()])
 
-   
+class newClienteForm(FlaskForm):
+    id_cliente =StringField('ID', validators=[DataRequired()])
+    n_cliente = StringField('Nombre', validators=[DataRequired()])
+    tel_cliente = StringField('Telefono', validators=[DataRequired()])
+    email_cliente = EmailField('E-Mail', validators=[DataRequired()])
+
+class newServicioForm(FlaskForm):
+    n_servicio = StringField('Nombre servicio', validators=[DataRequired()])
+    desc_servicio = StringField('Descripción servicio', validators=[DataRequired()])
+    #v_agregado = DecimalField(places=2, validators=[DataRequired()])
+
+class newVentaForm(FlaskForm):
+    #k_cliente = StringField('Nombre servicio', validators=[DataRequired()])
+    k_servicio = StringField('Servicio ', validators=[DataRequired()])
+    k_producto = StringField('Nombre producto ', id="k_producto", validators=[DataRequired()])
+    q_item = IntegerField('Cantidad ', validators=[DataRequired()])

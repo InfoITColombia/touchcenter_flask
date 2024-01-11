@@ -5,18 +5,147 @@ Login
 {%block contenido%}
 
 
-Nueva venta
+<h3 class="title-nventa"> Nueva Venta </h3>
 
-<br>
+
 
 <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ProveedorModal">Nuevo proveedor</button>
     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ArticuloModal">Nuevo producto</button>
-    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ArticuloModal">Nuevo cliente</button>
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ClienteModal">Nuevo cliente</button>
 
   </div>
 
+ 
 
+<div class="container mt-4">
+    <form method="POST" action="{{ url_for('cliente.consultarCliente') }}" class="form-inline">
+        {{ form_consultar_cliente.hidden_tag() }}
+        {{ form_consultar_cliente.csrf_token }}
+        <div class="form-group mx-sm-3 mb-2">
+            {{ form_consultar_cliente.id_cliente(class="form-control", placeholder="Ingrese el id del cliente") }}
+        </div>
+        <input class="btn btn-primary" type="submit" value="Consultar cliente">
+    </form>
+</div>
+
+
+
+<div class="container mt-5">
+        <!-- Your normal HTML content here -->
+        {% if session["cliente"] %}
+            <div class="card">
+                <div class="card-header">
+                    Información del Cliente
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">ID {{ session["cliente"]["id_Cliente"] }}</h5>
+                    <p class="card-text"><strong>Nombre:</strong> {{ session["cliente"]["n_cliente"] }}</p>
+                    <p class="card-text"><strong>Teléfono:</strong> {{ session["cliente"]["tel_cliente"] }}</p>
+                    <p class="card-text"><strong>Email:</strong> {{ session["cliente"]["email_cliente"] }}</p>
+                </div>
+            </div>
+            
+            <hr>
+            <br>
+            <!--Formulario venta -->
+            <!-- Botón y acordeón para nuevo servicio -->
+            <!--LISTAR SERVICIIOS AGREGADOS-->
+            <h1 class="mb-4">Listado de Servicios</h1>
+
+            <ul class="list-group">
+                {% for servicio in servicios %}
+                    <li class="list-group-item">
+                        <strong>ID:</strong> {{ servicio["id"] }}, <strong>Nombre del Servicio:</strong> {{ servicio["n_servicio"] }}
+                        {% for item in session["items"] %}
+                            {% if item["k_servicio"]|int == servicio["id"]|int %}
+                                <form method="POST" action="{{url_for('venta.sessionItemQuantity', k_servicio=servicio["id"], k_articulo=item["k_articulo"]) }}" class="ajax-form">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} - Valor: {{ item["vu_item"] }} -- SERVICIO {{ item["k_servicio"] }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="cantidad_nueva_{{ item['k_articulo'] }}" class="form-label">Nueva Cantidad</label>
+                                            <input type="number" name="cantidad_nueva_{{ item['k_articulo'] }}" id="cantidad_nueva_{{ item['k_articulo'] }}" class="form-control" value="{{ item['q_item'] }}">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="submit" class="btn btn-primary" value="Actualizar Cantidad">
+                                        </div>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card mt-3">
+                            <form method="POST" action="{{url_for('venta.sessionProducto', k_servicio=servicio["id"]) }}" class="ajax-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="k_producto" class="form-label">Nombre del Producto</label>
+                                        {{ form_new_venta.k_producto(class="form-control", id="k_producto_servicio_" + servicio["id"]|string) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input class="btn btn-primary" type="submit" value="Enviar">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+
+                {% endfor %}
+            </ul>
+            
+            
+
+            <!--AGREGAR SERVICIO -->
+            <div class ="card">
+                <form method="POST" action="{{url_for('venta.sessionServicio') }}" class="ajax-form">
+                    {{ form_new_venta.hidden_tag() }}
+                    {{ form_new_venta.csrf_token }}
+                
+                    <div class="mb-3">
+                        <label for="k_servicio" class="form-label">Servicio</label>
+                        {{ form_new_venta.k_servicio(class="form-control", id="autocomplete-servicio") }}
+                    </div>
+                
+                    <input class="btn btn-primary" type="submit" value="Registrar">
+                </form>
+            </div>
+
+            <!--
+        <div class ="card">  
+            <form method="POST" action="{{url_for('venta.registroventa', k_cliente=session["cliente"]["id_Cliente"], k_usuario=session["user"].n_usuario) }}" class="ajax-form">
+                {{ form_new_venta.hidden_tag() }}
+                {{ form_new_venta.csrf_token }}
+            
+                <div class="mb-3">
+                    <label for="k_servicio" class="form-label">Servicio</label>
+                    {{ form_new_venta.k_servicio(class="form-control", id="autocomplete-servicio") }}
+                </div>
+            
+                <div class="mb-3">
+                    <label for="k_producto" class="form-label">Nombre del Producto</label>
+                    {{ form_new_venta.k_producto(class="form-control") }}
+                </div>
+            
+                <input class="btn btn-primary" type="submit" value="Enviar">
+            </form>
+        </div>
+        -->
+
+        {%else %}
+        <p> No hay cliente</p>
+        {% endif %}
+    </div>
+
+
+
+    <div class ="card">  
+        <form method="POST" action="{{url_for('venta.registroventa', k_cliente=session["cliente"]["id_Cliente"], k_usuario=session["user"].n_usuario) }}" class="ajax-form">
+            {{ form_new_venta.hidden_tag() }}
+            {{ form_new_venta.csrf_token }}
+        
+            <input class="btn btn-primary" type="submit" value="Registrar Venta">
+        </form>
+    </div>
 
 <!-- Modal -->
 <div class="modal fade" id="ProveedorModal" tabindex="-1" aria-labelledby="ProveedorModalLabel" aria-hidden="true">
@@ -92,7 +221,8 @@ Nueva venta
 
                     <div class="mb-3">
                         {{ form_new_articulo.n_proveedor.label(class="form-label") }}
-                        {{ form_new_articulo.n_proveedor(class="form-control", id="autocomplete-proveedor") }}
+                        {{ form_new_articulo.n_proveedor(class="form-control", id="autocomplete-proveedor", list="products-list") }}
+
                     </div>
 
                     <!-- Campo oculto para almacenar el ID del proveedor -->
@@ -107,8 +237,84 @@ Nueva venta
     </div>
 </div>
 
+<div class="modal fade" id="ClienteModal" tabindex="-1" aria-labelledby="ClienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ url_for('cliente.nuevoCliente') }}" class="ajax-form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Cliente</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_new_cliente.hidden_tag() }}
+                    {{ form_new_cliente.csrf_token }}
+        
+                    <div class="mb-3">
+                        {{ form_new_cliente.id_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.id_cliente(class="form-control") }}
+                    </div>
+        
+                    <div class="mb-3">
+                        {{ form_new_cliente.n_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.n_cliente(class="form-control") }}
+                    </div>
+        
+                    <div class="mb-3">
+                        {{ form_new_cliente.tel_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.tel_cliente(class="form-control") }}
+                    </div>
+        
+                    <div class="mb-3">
+                        {{ form_new_cliente.email_cliente.label(class="form-label") }}
+                        {{ form_new_cliente.email_cliente(class="form-control") }}
+                    </div>
+        
 
+        
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input class="btn btn-primary" type="submit" value="Guardar">
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>
 
+{% for servicio in servicios %}
+<script>
+    
+    $(function(){
+        $.ajax({
+            url: '{{ url_for("articulo.JSONArticulos") }}'
+        }).done(function(data){
+            $('#k_producto_servicio_{{ servicio["id"] }}').autocomplete({
+                
+                source:data,
+                
+                minLenght:1
+            });
+        });
+    });
+</script>
+{%endfor%}
+
+<script>
+    
+    $(function(){
+        $.ajax({
+            url: '{{ url_for("articulo.JSONArticulos") }}'
+        }).done(function(data){
+            $('#k_producto').autocomplete({
+                
+                source:data,
+                
+                minLenght:1
+            });
+        });
+    });
+</script>
 <script>
   $(function() {
       $.ajax({
@@ -127,9 +333,51 @@ Nueva venta
           });
       });
   });
+
+  $(function() {
+      $.ajax({
+          
+          url: '{{ url_for("servicio.JSONServicios") }}'
+      }).done(function (data){
+          console.log(data)
+          $('#autocomplete-servicio').autocomplete({
+              source: data,
+              minLength: 2,
+              select: function(event, ui) {
+                k_servicio = ui.item.label
+                //console.log("K_PROVEEDOR ES "+k_proveedor)
+                  // Asigna el nombre del proveedor al campo n_proveedor
+                  $('#autocomplete-servicio').val(ui.item.label);
+              }
+          });
+      });
+  });
+
+  $(function() {
+      $.ajax({
+          
+          url: '{{ url_for("articulo.JSONArticulos") }}'
+      }).done(function (data){
+          console.log(data)
+          $('#autocomplete-articulo').autocomplete({
+              source: data,
+              minLength: 2,
+              select: function(event, ui) {
+                k_servicio = ui.item.label
+                //console.log("K_PROVEEDOR ES "+k_proveedor)
+                  // Asigna el nombre del proveedor al campo n_proveedor
+                  $('#autocomplete-articulo').val(ui.item.label);
+              }
+          });
+      });
+  });
 </script>
 
-
+<script>
+    $(document).ready(function() {
+    $('#nuevoServicioAcordeon').collapse();
+});
+</script>
 
 
 
