@@ -3,6 +3,11 @@ from .forms import *
 from .models import *
 from flask_jwt_extended import create_access_token, verify_jwt_in_request
 from ..config import Config as conf
+from .dash.dash_app import update_dash_data
+
+
+
+
 
 
 from functools import wraps
@@ -46,7 +51,13 @@ def token_required(f):
 
     return decorated
 
+def update_dash(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        update_dash_data()
+        return f(*args, **kwargs)
 
+    return decorated
 
 @venta.before_request
 @admin.before_request
@@ -331,6 +342,7 @@ def consultarCliente():
 
 
 @dash_route.route("/", methods=["GET"])
+@update_dash 
 def load_dash():
     #dash_url = url_for('main_app_dash') 
 

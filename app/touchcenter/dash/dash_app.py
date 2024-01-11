@@ -5,32 +5,19 @@ import pandas as pd
 from dash.dependencies import Output, Input
 import plotly.express as px
 from ..models import *
+from ...database import db
 
 
 
 
 
-
-def init_dashboard(server, db):
+def init_dashboard(server):
     
-    proveedores = db.session.query(Proveedor).all()
-    articulos = db.session.query(Articulo).all()
-
-    proveedores_data = [(proveedor.id, proveedor.n_proveedor, proveedor.dir_proveedor, proveedor.tel_proveedor) for proveedor in proveedores]
-    articulos_data = [(articulo.id, articulo.n_articulo, articulo.desc_articulo, articulo.v_articulo, articulo.q_Articulo, articulo.k_proveedor) for articulo in articulos]
-
-    proveedores_df = pd.DataFrame(proveedores_data, columns=['id_proveedor', 'n_proveedor', 'dir_proveedor', 'tel_proveedor'])
-    articulos_df = pd.DataFrame(articulos_data, columns=['id_articulo', 'n_articulo', 'desc_articulo', 'v_articulo', 'q_Articulo', 'k_proveedor'])
-
-    # Fusionar DataFrames
-    merged_df = pd.merge(articulos_df, proveedores_df, left_on='k_proveedor', right_on='id_proveedor')
+  
 
     # Crear el gráfico de barras
-    fig_proveedores = px.bar(merged_df, x='n_proveedor', y='q_Articulo', title='Cantidad de Artículos por Proveedor')
-    fig_servicios = serviciosGraph(db)
-    fig_ventas = ventasGraph(db)
 
-    print(proveedores)
+
     """Create a Plotly Dash dashboard."""
     main_app_dash = Dash(
         server=server,
@@ -44,7 +31,14 @@ def init_dashboard(server, db):
 
 
     # Create Dash Layout
-    main_app_dash.layout = html.Div(
+    main_app_dash.layout = buildGraph
+    return main_app_dash.server
+
+def buildGraph():
+    fig_proveedores = proveedoresGraph(db)
+    fig_servicios = serviciosGraph(db)
+    fig_ventas = ventasGraph(db)
+    return html.Div(
     children=[
         html.H1(children='Hello Dash'),
         dcc.Graph(
@@ -63,7 +57,21 @@ def init_dashboard(server, db):
         )
     ]
 )
-    return main_app_dash.server
+
+def proveedoresGraph(db):
+    proveedores = db.session.query(Proveedor).all()
+    articulos = db.session.query(Articulo).all()
+
+    proveedores_data = [(proveedor.id, proveedor.n_proveedor, proveedor.dir_proveedor, proveedor.tel_proveedor) for proveedor in proveedores]
+    articulos_data = [(articulo.id, articulo.n_articulo, articulo.desc_articulo, articulo.v_articulo, articulo.q_Articulo, articulo.k_proveedor) for articulo in articulos]
+
+    proveedores_df = pd.DataFrame(proveedores_data, columns=['id_proveedor', 'n_proveedor', 'dir_proveedor', 'tel_proveedor'])
+    articulos_df = pd.DataFrame(articulos_data, columns=['id_articulo', 'n_articulo', 'desc_articulo', 'v_articulo', 'q_Articulo', 'k_proveedor'])
+
+    # Fusionar DataFrames
+    merged_df = pd.merge(articulos_df, proveedores_df, left_on='k_proveedor', right_on='id_proveedor')
+    fig_proveedores = px.bar(merged_df, x='n_proveedor', y='q_Articulo', title='Cantidad de Artículos por Proveedor')
+    return fig_proveedores
 
 def serviciosGraph(db):
     servicios = db.session.query(Servicio).all()
@@ -84,3 +92,13 @@ def ventasGraph(db):
     # Crear gráfico de líneas temporales
     fig_ventas = px.line(df_ventas, x='Fecha de Venta', y='Valor Total de Venta', title='Evolución Temporal de Ventas')
     return fig_ventas
+
+
+def update_dash_data():
+    """Update Dash data."""
+    # Update Dash data
+    print('Updating Dash data...')
+    print('Dash data updated!')
+    print('Updating Dash graph...')
+    print('Dash graph updated!')
+    
