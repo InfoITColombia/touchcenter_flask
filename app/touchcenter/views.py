@@ -193,6 +193,13 @@ def sessionServicio():
     else:
         flash("error", "No se encontró el servicio elegido.")
     return redirect(request.referrer)
+
+@venta.route("/eliminarItem/<k_servicio>/<k_articulo>", methods = ["GET"])
+def eliminarItem(k_servicio, k_articulo):
+    items = session.get("items", [])
+    items = [item for item in items if item["k_servicio"] != k_servicio and item["k_articulo"] != k_articulo]
+    session["items"] = items
+    return redirect(request.referrer)
     
 @venta.route("/sessionProducto/<k_servicio>", methods=["POST"])
 def sessionProducto(k_servicio):

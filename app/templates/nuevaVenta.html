@@ -78,34 +78,66 @@ Login
             <ul class="list-group">
                 {% for servicio in servicios %}
                     <li class="list-group-item">
-                        <strong>ID:</strong> {{ servicio["id"] }}, <strong>Nombre del Servicio:</strong> {{ servicio["n_servicio"] }}
-                        {% for item in session["items"] %}
-                            {% if item["k_servicio"]|int == servicio["id"]|int %}
-                                <form method="POST" action="{{url_for('venta.sessionItemQuantity', k_servicio=servicio["id"], k_articulo=item["k_articulo"]) }}" class="ajax-form">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p>{{ item["k_articulo"] }} - Cantidad: {{ item["q_item"] }} - Valor: {{ item["vu_item"] }} -- SERVICIO {{ item["k_servicio"] }}</p>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="cantidad_nueva_{{ item['k_articulo'] }}" class="form-label">Nueva Cantidad</label>
-                                            <input type="number" name="cantidad_nueva_{{ item['k_articulo'] }}" id="cantidad_nueva_{{ item['k_articulo'] }}" class="form-control" value="{{ item['q_item'] }}">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input type="submit" class="btn btn-primary" value="Actualizar Cantidad">
-                                        </div>
-                                    </div>
-                                </form>
-                            {% endif %}
-                        {% endfor %}
+                         <strong>Servicio de {{ servicio["n_servicio"] }} </strong>
+
+
+                         <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Valor Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in session["items"] %}
+                                    {% if item["k_servicio"]|int == servicio["id"]|int %}
+                                        <form method="POST" action="{{ url_for('venta.sessionItemQuantity', k_servicio=servicio["id"], k_articulo=item["k_articulo"]) }}" class="ajax-form">
+                                            <tr>
+                                                <td>{{ item["k_articulo"] }}</td>
+                                                <td>
+                                                    <div class="input-group" style="width: 150px;">
+                                                        <input type="number" name="cantidad_nueva_{{ item['k_articulo'] }}" id="cantidad_nueva_{{ item['k_articulo'] }}" class="form-control form-control-sm" value="{{ item['q_item'] }}">
+                                                        <div class="input-group-append">
+                                                            <input type="submit" class="btn btn-primary btn-sm" value="Actualizar Cantidad">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ item["vu_item"] }}</td>
+                                                <td>
+                                                    {% set q_item_float = item["q_item"] | float %}
+                                                    {% set vu_item_float = item["vu_item"] | float %}
+                                                    {% if q_item_float is defined and vu_item_float is defined %}
+                                                        {{ q_item_float * vu_item_float }}
+                                                    {% else %}
+                                                        Valor no definido
+                                                    {% endif %}
+                                                </td>
+                                                
+                                                
+                                                <td>
+                                                    <a href="{{ url_for('venta.eliminarItem', k_servicio=servicio["id"], k_articulo=item["k_articulo"]) }}" class="btn btn-danger">Eliminar</a>
+                                                </td>
+                                            </tr>
+                                        </form>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+
+
                         <div class="card mt-3">
-                            <form method="POST" action="{{url_for('venta.sessionProducto', k_servicio=servicio["id"]) }}" class="ajax-form">
+                            <form method="POST" action="{{ url_for('venta.sessionProducto', k_servicio=servicio["id"]) }}" class="ajax-form">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="k_producto" class="form-label">Nombre del Producto</label>
                                         {{ form_new_venta.k_producto(class="form-control", id="k_producto_servicio_" + servicio["id"]|string) }}
                                     </div>
                                     <div class="col-md-6">
-                                        <input class="btn btn-primary" type="submit" value="Enviar">
+                                        <input class="btn btn-primary" type="submit" value="Agregar Producto">
                                     </div>
                                 </div>
                             </form>

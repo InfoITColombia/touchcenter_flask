@@ -106,7 +106,7 @@ class ServicioSchema(ma.SQLAlchemyAutoSchema):
 class ItemSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model : Item
-        fields = ["k_venta", "k_servicio", "k_articulo" , "q_item " , "vu_item", "articulo"]
+        fields = ["k_venta", "k_servicio", "k_articulo" , "q_item" , "vu_item", "articulo"]
 
 class ArticuloSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
