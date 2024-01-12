@@ -213,8 +213,10 @@ def new_venta(k_cliente,k_usuario, items):
         for item in items:
             i = Item(k_articulo =  item["k_articulo"], k_servicio =  item["k_servicio"], q_item =  item["q_item"], vu_item = item["vu_item"] )
             lstItems.append(i)
-            s = Servicio_Venta(k_servicio = item["k_servicio"], v_agregado = 1000)
-            lstServicios.append(s)
+            existing_servicio = next((s for s in lstServicios if s.k_servicio == item["k_servicio"]), None)
+            if existing_servicio is None:
+                s = Servicio_Venta(k_servicio=item["k_servicio"], v_agregado=1000)
+                lstServicios.append(s)
             total += float(item["vu_item"]) * int(item["q_item"])
 
 

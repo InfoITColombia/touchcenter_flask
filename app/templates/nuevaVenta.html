@@ -5,7 +5,7 @@ Login
 {%block contenido%}
 
 
-<h3 class="title-nventa"> Nueva Venta </h3>
+<h5 class="title-nventa"> Nueva Venta </h5>
 
 
 
@@ -18,36 +18,58 @@ Login
 
  
 
-<div class="container mt-4">
+  <div class="container mt-5">
     <form method="POST" action="{{ url_for('cliente.consultarCliente') }}" class="form-inline">
         {{ form_consultar_cliente.hidden_tag() }}
         {{ form_consultar_cliente.csrf_token }}
-        <div class="form-group mx-sm-3 mb-2">
-            {{ form_consultar_cliente.id_cliente(class="form-control", placeholder="Ingrese el id del cliente") }}
+
+        <div class="row">
+            <!-- Lado de la Consulta -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form_consultar_cliente.id_cliente(class="form-control", placeholder="Ingrese el id del cliente") }}
+                    <button class="btn btn-primary" type="submit">Consultar cliente</button>
+                </div>
+            </div>
+
+            <!-- Lado del Resultado -->
+           <!-- Lado del Resultado -->
+            <div class="col-md-6">
+                {% if session["cliente"] %}
+                    <div class="card">
+                        <div class="card-header">
+                            Información del Cliente
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5 class="card-title">{{ session["cliente"]["id_Cliente"] }} - {{ session["cliente"]["n_cliente"] }}</h5>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="card-text"><strong>Contacto:</strong> {{ session["cliente"]["tel_cliente"] }} - {{ session["cliente"]["email_cliente"] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card">
+                        <div class="card-header">
+                            Consulta un cliente para realizar la venta
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-        <input class="btn btn-primary" type="submit" value="Consultar cliente">
     </form>
 </div>
+
 
 
 
 <div class="container mt-5">
         <!-- Your normal HTML content here -->
         {% if session["cliente"] %}
-            <div class="card">
-                <div class="card-header">
-                    Información del Cliente
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">ID {{ session["cliente"]["id_Cliente"] }}</h5>
-                    <p class="card-text"><strong>Nombre:</strong> {{ session["cliente"]["n_cliente"] }}</p>
-                    <p class="card-text"><strong>Teléfono:</strong> {{ session["cliente"]["tel_cliente"] }}</p>
-                    <p class="card-text"><strong>Email:</strong> {{ session["cliente"]["email_cliente"] }}</p>
-                </div>
-            </div>
-            
-            <hr>
-            <br>
+
             <!--Formulario venta -->
             <!-- Botón y acordeón para nuevo servicio -->
             <!--LISTAR SERVICIIOS AGREGADOS-->
@@ -110,21 +132,23 @@ Login
                 </form>
             </div>
 
-        {%else %}
-        <p> No hay cliente</p>
+            <div class ="card">  
+                <form method="POST" action="{{url_for('venta.registroventa', k_cliente=session["cliente"]["id_Cliente"], k_usuario=session["user"].n_usuario) }}" class="ajax-form">
+                    {{ form_new_venta.hidden_tag() }}
+                    {{ form_new_venta.csrf_token }}
+                
+                    <input class="btn btn-primary" type="submit" value="Registrar Venta">
+                </form>
+            </div>
+
         {% endif %}
+
+
     </div>
 
 
 
-    <div class ="card">  
-        <form method="POST" action="{{url_for('venta.registroventa', k_cliente=session["cliente"]["id_Cliente"], k_usuario=session["user"].n_usuario) }}" class="ajax-form">
-            {{ form_new_venta.hidden_tag() }}
-            {{ form_new_venta.csrf_token }}
-        
-            <input class="btn btn-primary" type="submit" value="Registrar Venta">
-        </form>
-    </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="ProveedorModal" tabindex="-1" aria-labelledby="ProveedorModalLabel" aria-hidden="true">

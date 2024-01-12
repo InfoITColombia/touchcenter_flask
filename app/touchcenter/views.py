@@ -168,7 +168,7 @@ def registroventa(k_cliente, k_usuario):
 
         venta = new_venta(k_cliente,k_usuario, session["items"])
         if venta:
-            flash("sucess", "Venta registrada!")
+            flash("success", "Venta registrada!")
             return redirect(request.referrer)
         else:
             flash("error","No se registro la venta ")
@@ -194,21 +194,26 @@ def sessionServicio():
         flash("error", "No se encontró el servicio elegido.")
     return redirect(request.referrer)
     
-@venta.route("/sessionProducto/<k_servicio>", methods = ["POST"])
+@venta.route("/sessionProducto/<k_servicio>", methods=["POST"])
 def sessionProducto(k_servicio):
-    form_new_venta  =newVentaForm()
+    form_new_venta = newVentaForm()
     k_producto = form_new_venta.k_producto.data.split(" - ")[0]
     articulo = get_articulo_by_id(k_producto)
-    item = Item(k_articulo = k_producto, k_servicio = k_servicio, q_item = 1, vu_item = articulo["v_articulo"]  )
+    item = Item(k_articulo=k_producto, k_servicio=k_servicio, q_item=1, vu_item=articulo["v_articulo"])
     item_schema = ItemSchema()
-    i = item_schema.dump(item)
+    item_dict = item_schema.dump(item)
+
     items = session.get("items", [])
-    print("ITEMS AL MOMENTO ES ", items)
-    #print(k_producto)
-    items.append(i)
-    session["items"] = items
-    #flash("success", "Producto agregado correctamente.")
+    existing_item = next((it for it in items if it["k_servicio"] == k_servicio and it["k_articulo"] == k_producto), None)
+
+    if existing_item is None:
+        items.append(item_dict)
+        session["items"] = items
+    else:
+        flash("error", "Ya existe el producto en el servicio")
+
     return redirect(request.referrer)
+
 
 @venta.route("/sessionItemQuantity/<k_servicio>/<k_articulo>", methods = ["PUT", "POST"])
 def sessionItemQuantity(k_servicio, k_articulo):
