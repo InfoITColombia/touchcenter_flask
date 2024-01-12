@@ -2,7 +2,7 @@
 from flask.wrappers import Response
 from werkzeug.utils import secure_filename
 from ..database import db, ma
-from datetime import datetime
+from datetime import datetime, timedelta
 from base64 import b64encode
 
 
@@ -193,6 +193,15 @@ def consultar_cliente (id_cliente):
     except Exception as e:
         print("Error consultando cliente ")
         return cliente
+    
+def obtener_ventas_diarias():
+
+    ventas_diarias = db.session.query(
+        db.func.date(Venta.f_venta).label('fecha'),
+        db.func.sum(Venta.v_total_venta).label('total_venta')
+    ).group_by(db.func.date(Venta.f_venta)).all()
+
+    return ventas_diarias
 
 def new_venta(k_cliente,k_usuario, items):
     print("FUNCION CREAR VENTA>>>>>> cliente es ", k_cliente, "yo soy  ", k_usuario, items)

@@ -33,26 +33,29 @@ def init_dashboard(server):
     return main_app_dash.server
 
 def buildGraph():
-    fig_proveedores = proveedoresGraph(db)
+
     fig_servicios = serviciosGraph(db)
     fig_ventas = ventasGraph(db)
+
+
+
     return html.Div(
     children=[
-        html.H1(children='Hello Dash'),
-        dcc.Graph(
-        id='example-graph',
-        figure=fig_proveedores
-        ),
-        html.H1(children='Gráfico de Torta para Servicios'),
-        dcc.Graph(
-            id='pie-chart',
-            figure=fig_servicios
-        ),
-        html.H1(children='Gráfico de Líneas Temporales para Ventas'),
+
+        html.H1(children='Ventas por día'),
         dcc.Graph(
             id='line-chart',
             figure=fig_ventas
+        ),
+        html.H1(children='Proveedores y Artículos'),
+
+
+        html.H1(children='Servicios'),
+        dcc.Graph(
+            id='pie-chart',
+            figure=fig_servicios
         )
+
     ]
 )
 
