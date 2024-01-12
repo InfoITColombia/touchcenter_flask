@@ -11,7 +11,7 @@ Login
 
 <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ProveedorModal">Nuevo proveedor</button>
-    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ArticuloModal">Nuevo producto</button>
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ArticuloModal" onclick="abrirModal()">Nuevo producto</button>
     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ClienteModal">Nuevo cliente</button>
 
   </div>
@@ -110,27 +110,6 @@ Login
                 </form>
             </div>
 
-            <!--
-        <div class ="card">  
-            <form method="POST" action="{{url_for('venta.registroventa', k_cliente=session["cliente"]["id_Cliente"], k_usuario=session["user"].n_usuario) }}" class="ajax-form">
-                {{ form_new_venta.hidden_tag() }}
-                {{ form_new_venta.csrf_token }}
-            
-                <div class="mb-3">
-                    <label for="k_servicio" class="form-label">Servicio</label>
-                    {{ form_new_venta.k_servicio(class="form-control", id="autocomplete-servicio") }}
-                </div>
-            
-                <div class="mb-3">
-                    <label for="k_producto" class="form-label">Nombre del Producto</label>
-                    {{ form_new_venta.k_producto(class="form-control") }}
-                </div>
-            
-                <input class="btn btn-primary" type="submit" value="Enviar">
-            </form>
-        </div>
-        -->
-
         {%else %}
         <p> No hay cliente</p>
         {% endif %}
@@ -221,8 +200,12 @@ Login
 
                     <div class="mb-3">
                         {{ form_new_articulo.n_proveedor.label(class="form-label") }}
-                        {{ form_new_articulo.n_proveedor(class="form-control", id="autocomplete-proveedor", list="products-list") }}
-
+                        <input class="form-control autocomplete-proveedor" id="autocomplete-proveedor" list="proveedores-list" name="{{ form_new_articulo.n_proveedor.name }}">
+                        <datalist id="proveedores-list">
+                            {% for proveedor in proveedores %}
+                                <option value="{{proveedor.id}} - {{proveedor.n_proveedor}}">
+                            {% endfor %}    
+                        </datalist>
                     </div>
 
                     <!-- Campo oculto para almacenar el ID del proveedor -->
@@ -289,10 +272,8 @@ Login
         $.ajax({
             url: '{{ url_for("articulo.JSONArticulos") }}'
         }).done(function(data){
-            $('#k_producto_servicio_{{ servicio["id"] }}').autocomplete({
-                
+            $('#k_producto_servicio_{{ servicio["id"] }}').autocomplete({        
                 source:data,
-                
                 minLenght:1
             });
         });
@@ -300,39 +281,37 @@ Login
 </script>
 {%endfor%}
 
-<script>
-    
-    $(function(){
+<script>  
+    $(function(){       
         $.ajax({
-            url: '{{ url_for("articulo.JSONArticulos") }}'
+            url: '{{ url_for("proveedor.JSONProveedores") }}'
         }).done(function(data){
-            $('#k_producto').autocomplete({
-                
+            
+            $('#autocomplete-proveedor').autocomplete({        
                 source:data,
-                
                 minLenght:1
+                
             });
         });
     });
 </script>
+
 <script>
-  $(function() {
-      $.ajax({
-          url: '{{ url_for("proveedor.JSONProveedores") }}'
-      }).done(function (data){
-          console.log(data)
-          $('#autocomplete-proveedor').autocomplete({
-              source: data,
-              minLength: 2,
-              select: function(event, ui) {
-                k_proveedor = ui.item.label
-                console.log("K_PROVEEDOR ES "+k_proveedor)
-                  // Asigna el nombre del proveedor al campo n_proveedor
-                  $('#autocomplete-proveedor').val(ui.item.label);
-              }
-          });
-      });
-  });
+    function abrirModal() {
+        $.ajax({
+            url: '{{ url_for("proveedor.JSONProveedores") }}'
+        }).done(function(data){
+            console.log(data)
+            $('#autocomplete-proveedor').autocomplete({        
+                source: data,
+                minLength: 1
+            });
+        });
+    }
+</script>
+
+<script>
+
 
   $(function() {
       $.ajax({
@@ -378,6 +357,43 @@ Login
     $('#nuevoServicioAcordeon').collapse();
 });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtén la referencia al campo de entrada de proveedores
+        var proveedorInput = document.querySelector('.autocomplete-proveedor');
+
+        // Función para cargar dinámicamente las opciones de proveedores
+        function cargarOpciones() {
+            fetch('{{ url_for("proveedor.JSONProveedores") }}')
+                .then(response => response.json())
+                .then(data => {
+                    // Muestra los datos en la consola para verificar
+                    console.log('Datos de proveedores:', data);
+
+                    // Asigna las opciones al campo de entrada
+                    proveedorInput.setAttribute('list', 'proveedores-list');
+                    var datalist = document.createElement('datalist');
+                    datalist.id = 'proveedores-list';
+
+                    data.forEach(function(proveedor) {
+                        var option = document.createElement('option');
+                        option.value = proveedor;
+                        datalist.appendChild(option);
+                    });
+
+                    // Añade el datalist al DOM
+                    proveedorInput.parentNode.appendChild(datalist);
+                })
+                .catch(error => console.error('Error al cargar proveedores:', error));
+        }
+
+        // Llama a la función para cargar opciones cuando el modal se muestra
+        cargarOpciones();
+    });
+</script>
+
+
 
 
 

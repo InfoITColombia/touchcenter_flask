@@ -91,7 +91,12 @@ Admin
 
                     <div class="mb-3">
                         {{ form_new_articulo.n_proveedor.label(class="form-label") }}
-                        {{ form_new_articulo.n_proveedor(class="form-control", id="autocomplete-proveedor") }}
+                        <input class="form-control autocomplete-proveedor" id="autocomplete-proveedor" list="proveedores-list" name="{{ form_new_articulo.n_proveedor.name }}">
+                        <datalist id="proveedores-list">
+                            {% for proveedor in proveedores %}
+                                <option value="{{proveedor.id}} - {{proveedor.n_proveedor}}">
+                            {% endfor %}    
+                        </datalist>
                     </div>
 
                     <!-- Campo oculto para almacenar el ID del proveedor -->

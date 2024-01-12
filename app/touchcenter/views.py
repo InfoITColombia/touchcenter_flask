@@ -3,7 +3,7 @@ from .forms import *
 from .models import *
 from flask_jwt_extended import create_access_token, verify_jwt_in_request
 from ..config import Config as conf
-from .dash.dash_app import update_dash_data
+
 
 
 
@@ -51,13 +51,8 @@ def token_required(f):
 
     return decorated
 
-def update_dash(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        update_dash_data()
-        return f(*args, **kwargs)
 
-    return decorated
+
 
 @venta.before_request
 @admin.before_request
@@ -157,10 +152,12 @@ def nuevaventa():
     form_new_proveedor = newProveedorForm()
     form_consultar_cliente = newClienteForm()
     form_new_venta  =newVentaForm()
+    proveedores = get_proveedores()
+    proveedores_json = [{"label": str(proveedor.id) +" - "+ proveedor.n_proveedor, "value": str(proveedor.id) +" - "+ proveedor.n_proveedor} for proveedor in proveedores]
     if request.method == "GET":
         
         print("LA SESION ESSS ", session)
-        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente, servicios = session["servicios"])
+        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente, servicios = session["servicios"], proveedores = proveedores)
 
 
 @venta.route("/registroventa/<k_cliente>/<k_usuario>", methods=["GET", "POST"])
@@ -235,8 +232,9 @@ def dash():
     form_new_articulo = newArticuloForm()
     form_new_proveedor = newProveedorForm()
     form_new_servicio = newServicioForm()
+    proveedores = get_proveedores()
     if request.method == "GET":
-        return render_template('admin.html', form_new_cliente = form_new_cliente, form_new_articulo= form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_servicio = form_new_servicio)
+        return render_template('admin.html', form_new_cliente = form_new_cliente, form_new_articulo= form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_servicio = form_new_servicio, proveedores = proveedores)
 
 
 @proveedor.route("/nuevo", methods=["POST"])
@@ -342,7 +340,6 @@ def consultarCliente():
 
 
 @dash_route.route("/", methods=["GET"])
-@update_dash 
 def load_dash():
     #dash_url = url_for('main_app_dash') 
 

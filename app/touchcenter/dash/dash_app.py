@@ -9,8 +9,6 @@ from ...database import db
 
 
 
-
-
 def init_dashboard(server):
     
   
@@ -94,11 +92,4 @@ def ventasGraph(db):
     return fig_ventas
 
 
-def update_dash_data():
-    """Update Dash data."""
-    # Update Dash data
-    print('Updating Dash data...')
-    print('Dash data updated!')
-    print('Updating Dash graph...')
-    print('Dash graph updated!')
     
