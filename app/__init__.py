@@ -41,12 +41,14 @@ def create_app(config=DevelopmentConfigSQLITE):
 
     
     #app = config_dash(db, app)
+        app.debug = True
     return app
 
 
 
 if __name__ == "__main__":
     app_flask = create_app()
-
-    print("DEBUG" + str(app_flask.debug))
+    print("DEBUG Default: " + str(app_flask.debug))
+    app_flask.debug = True
+    print("DEBUG: " + str(app_flask.debug))
     app_flask.run()

@@ -33,7 +33,6 @@ Login
             </div>
 
             <!-- Lado del Resultado -->
-           <!-- Lado del Resultado -->
             <div class="col-md-6">
                 {% if session["cliente"] %}
                     <div class="card">
@@ -41,14 +40,11 @@ Login
                             Información del Cliente
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h5 class="card-title">{{ session["cliente"]["id_Cliente"] }} - {{ session["cliente"]["n_cliente"] }}</h5>
-                                </div>
-                                <div class="col-md-4">
-                                    <p class="card-text"><strong>Contacto:</strong> {{ session["cliente"]["tel_cliente"] }} - {{ session["cliente"]["email_cliente"] }}</p>
-                                </div>
-                            </div>
+                            <p class="card-text">
+                                <strong>ID:</strong> {{ session["cliente"]["id_Cliente"] }} - 
+                                <strong>Nombre:</strong> {{ session["cliente"]["n_cliente"] }} - 
+                                <strong>Contacto:</strong> {{ session["cliente"]["tel_cliente"] }} - {{ session["cliente"]["email_cliente"] }}
+                            </p>
                         </div>
                     </div>
                 {% else %}
@@ -66,6 +62,12 @@ Login
 
 
 
+
+
+
+
+
+
 <div class="container mt-5">
         <!-- Your normal HTML content here -->
         {% if session["cliente"] %}
@@ -78,10 +80,23 @@ Login
             <ul class="list-group">
                 {% for servicio in servicios %}
                     <li class="list-group-item">
-                         <strong>Servicio de {{ servicio["n_servicio"] }} </strong>
-
-
-                         <table class="table">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>Servicio de {{ servicio["n_servicio"] }}</strong>
+                            <div class="card">
+                                <form method="POST" action="{{ url_for('venta.sessionProducto', k_servicio=servicio["id"]) }}" class="ajax-form">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="k_producto" class="form-label">Nombre del Producto</label>
+                                            {{ form_new_venta.k_producto(class="form-control", id="k_producto_servicio_" + servicio["id"]|string) }}
+                                        </div>
+                                        <div class="col ">
+                                            <input class="btn btn-primary btn-block" type="submit" value="Agregar Producto">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <table class="table mt-3">
                             <thead>
                                 <tr>
                                     <th>Producto</th>
@@ -96,11 +111,23 @@ Login
                                     {% if item["k_servicio"]|int == servicio["id"]|int %}
                                         <form method="POST" action="{{ url_for('venta.sessionItemQuantity', k_servicio=servicio["id"], k_articulo=item["k_articulo"]) }}" class="ajax-form">
                                             <tr>
-                                                <td>{{ item["k_articulo"] }}</td>
+                                                {% set articulo = get_articulo_by_id(item["k_articulo"]) %}
                                                 <td>
-                                                    <div class="input-group" style="width: 150px;">
-                                                        <input type="number" name="cantidad_nueva_{{ item['k_articulo'] }}" id="cantidad_nueva_{{ item['k_articulo'] }}" class="form-control form-control-sm" value="{{ item['q_item'] }}">
-                                                        <div class="input-group-append">
+                                                    <div>
+                                                        <p class="mb-0">
+                                                            ({{ articulo["id"] }}) {{ articulo["n_articulo"] }}
+                                                        </p>
+                                                        <p class="small text-muted">
+                                                            Cantidad: {{ articulo["q_articulo"] }}
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="col-3">
+                                                            <input type="number" name="cantidad_nueva_{{ item['k_articulo'] }}" id="cantidad_nueva_{{ item['k_articulo'] }}" class="form-control form-control-sm" value="{{ item['q_item'] }}">
+                                                        </div>
+                                                        <div class="col-3">
                                                             <input type="submit" class="btn btn-primary btn-sm" value="Actualizar Cantidad">
                                                         </div>
                                                     </div>
@@ -115,8 +142,6 @@ Login
                                                         Valor no definido
                                                     {% endif %}
                                                 </td>
-                                                
-                                                
                                                 <td>
                                                     <a href="{{ url_for('venta.eliminarItem', k_servicio=servicio["id"], k_articulo=item["k_articulo"]) }}" class="btn btn-danger">Eliminar</a>
                                                 </td>
@@ -126,26 +151,10 @@ Login
                                 {% endfor %}
                             </tbody>
                         </table>
-                        
-
-
-                        <div class="card mt-3">
-                            <form method="POST" action="{{ url_for('venta.sessionProducto', k_servicio=servicio["id"]) }}" class="ajax-form">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="k_producto" class="form-label">Nombre del Producto</label>
-                                        {{ form_new_venta.k_producto(class="form-control", id="k_producto_servicio_" + servicio["id"]|string) }}
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input class="btn btn-primary" type="submit" value="Agregar Producto">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
                     </li>
-
                 {% endfor %}
             </ul>
+            
             
             
 

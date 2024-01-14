@@ -157,7 +157,7 @@ def nuevaventa():
     if request.method == "GET":
         
         print("LA SESION ESSS ", session)
-        return render_template('nuevaVenta.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente, servicios = session["servicios"], proveedores = proveedores)
+        return render_template('nuevaVenta2.html', form_new_cliente = form_new_cliente, form_new_articulo = form_new_articulo, form_new_proveedor = form_new_proveedor, form_new_venta = form_new_venta, form_consultar_cliente=form_consultar_cliente, servicios = session["servicios"], proveedores = proveedores, get_articulo_by_id = get_articulo_by_id, subtotal = 0)
 
 
 @venta.route("/registroventa/<k_cliente>/<k_usuario>", methods=["GET", "POST"])

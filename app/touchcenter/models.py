@@ -21,7 +21,7 @@ class Articulo(db.Model):
     n_articulo = db.Column(db.String(100), nullable = False)
     desc_articulo = db.Column(db.String(300))
     v_articulo = db.Column(db.Numeric(11,2), nullable = False )
-    q_Articulo = db.Column(db.Integer)
+    q_articulo = db.Column(db.Integer)
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
     #Llaves foráneas
@@ -154,6 +154,10 @@ def get_servicios():
 def get_articulos():
     articulos = Articulo.query.all()
     return articulos
+
+def get_articulo_by_id(id):
+    articulo = Articulo.query.filter_by(id = id).first()
+    return articulo
 
 def register_articulo(n_articulo, desc_articulo, v_articulo,q_Articulo, k_proveedor):
     articulo = Articulo(n_articulo = n_articulo, desc_articulo = desc_articulo, v_articulo = v_articulo,q_Articulo = q_Articulo, k_proveedor=k_proveedor)
